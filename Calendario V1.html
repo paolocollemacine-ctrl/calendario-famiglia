@@ -581,7 +581,7 @@ function normalizeState(p){
   if(!p.timeSlots)p.timeSlots=[...new Set(p.events.map(e=>e.time))].sort();
   if(!p.projects)p.projects=defaultData().projects;
   if(!p.settings)p.settings={theme:'dark',view:'grid'};
-  migrateTraining(p);
+  if(!p.trainingMigrated){ migrateTraining(p); p.trainingMigrated = true; }
   if(!p.projectsSorted){p.projects=sortProjectsByStatus(p.projects);p.projectsSorted=true;}
   if(!p.meals)p.meals={week:0,date:null,checked:{}};
   return p;
@@ -591,6 +591,8 @@ function loadState(){
   catch(e){} return defaultData();
 }
 function migrateTraining(p){
+  // Migrazione una tantum (protetta da p.trainingMigrated): aggiunge gli allenamenti
+  // di default solo la primissima volta. Dopo, se li cancelli, restano cancellati.
   const need=[['20:00'],['10:00']];
   need.forEach(arr=>arr.forEach(t=>{if(!p.timeSlots.includes(t))p.timeSlots.push(t);}));
   const hasTraining=(day)=>p.events.some(e=>e.day===day && e.label==='Allenamento cardio');
