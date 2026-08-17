@@ -364,6 +364,7 @@
 /* Se il file viene aperto dentro un anteprima sandboxata (Drive, OneDrive) che blocca
    script esterni, questa parte fallisce silenziosamente e l'app continua a funzionare
    in locale con localStorage, esattamente come prima. */
+const TS_KEY = 'calendario-famiglia-v3-ts';
 let cloudSaveTimeout = null;
 let applyingRemoteUpdate = false;
 let firstSnapshotHandled = false;
@@ -371,14 +372,20 @@ let cloudReady = false;
 let pendingCloudSave = false;
 let cloudDocRef = null, setDocFn = null, onSnapshotFn = null;
 
+function getLocalTs(){ return parseInt(localStorage.getItem(TS_KEY) || '0', 10); }
+function setLocalTs(ts){ try{ localStorage.setItem(TS_KEY, String(ts)); }catch(e){} }
+
 function scheduleCloudSave(){
   if(applyingRemoteUpdate) return; // non ri-mandare al cloud un aggiornamento appena ricevuto dal cloud
+  const ts = Date.now();
+  setLocalTs(ts); // scritto subito: sopravvive anche a un F5 immediato, prima che il cloud riceva la modifica
   if(!cloudReady){ pendingCloudSave = true; return; }
   if(cloudSaveTimeout) clearTimeout(cloudSaveTimeout);
+  const snapshot = JSON.stringify(state);
   cloudSaveTimeout = setTimeout(()=>{
-    setDocFn(cloudDocRef, {data: JSON.stringify(state), updatedAt: Date.now()})
+    setDocFn(cloudDocRef, {data: snapshot, updatedAt: ts})
       .catch(err=>{console.error(err); toast('Modifiche salvate solo su questo dispositivo (offline dal cloud)','warn');});
-  }, 500);
+  }, 400);
 }
 
 function rerenderAll(){
@@ -415,19 +422,32 @@ async function initFirebaseSync(){
     onSnapshot(cloudDocRef, (snap)=>{
       if(snap.exists()){
         const remote = snap.data();
+        const remoteTs = remote && remote.updatedAt ? remote.updatedAt : 0;
+        const localTs = getLocalTs();
         if(remote && remote.data && remote.data !== JSON.stringify(state)){
-          if(editingId || editingProjectId){ return; } // non sovrascrivere una modifica in corso
-          try{
-            const parsed = JSON.parse(remote.data);
-            applyingRemoteUpdate = true;
-            state = normalizeState(parsed);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            rerenderAll();
-            if(firstSnapshotHandled) toast('Calendario aggiornato','info');
-          } finally { applyingRemoteUpdate = false; }
+          if(remoteTs < localTs){
+            // il locale è più recente del cloud: probabilmente un salvataggio precedente
+            // non era arrivato in tempo (es. F5 troppo rapido). Rimandiamo lo stato locale.
+            if(cloudReady){
+              setDocFn(cloudDocRef, {data: JSON.stringify(state), updatedAt: localTs})
+                .catch(err=>console.error(err));
+            }
+          } else if(editingId || editingProjectId){
+            return; // non sovrascrivere una modifica in corso
+          } else {
+            try{
+              const parsed = JSON.parse(remote.data);
+              applyingRemoteUpdate = true;
+              state = normalizeState(parsed);
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+              setLocalTs(remoteTs);
+              rerenderAll();
+              if(firstSnapshotHandled) toast('Calendario aggiornato','info');
+            } finally { applyingRemoteUpdate = false; }
+          }
         }
       } else {
-        setDoc(cloudDocRef, {data: JSON.stringify(state), updatedAt: Date.now()});
+        setDoc(cloudDocRef, {data: JSON.stringify(state), updatedAt: getLocalTs() || Date.now()});
       }
       firstSnapshotHandled = true;
     }, (err)=>{
@@ -1533,6 +1553,12 @@ render();
 renderProjects();
 renderMeals();
 initFirebaseSync();
+window.addEventListener('beforeunload', ()=>{
+  if(cloudSaveTimeout && cloudReady && setDocFn && cloudDocRef){
+    clearTimeout(cloudSaveTimeout);
+    setDocFn(cloudDocRef, {data: JSON.stringify(state), updatedAt: getLocalTs()}).catch(()=>{});
+  }
+});
 </script>
 </body>
 </html>
