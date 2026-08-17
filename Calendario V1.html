@@ -360,6 +360,109 @@
   </div>
 </div>
 <script>
+/* ---------- Sincronizzazione cloud (Firebase) - opzionale e non bloccante ---------- */
+/* Se il file viene aperto dentro un anteprima sandboxata (Drive, OneDrive) che blocca
+   script esterni, questa parte fallisce silenziosamente e l'app continua a funzionare
+   in locale con localStorage, esattamente come prima. */
+const TS_KEY = 'calendario-famiglia-v3-ts';
+let cloudSaveTimeout = null;
+let applyingRemoteUpdate = false;
+let firstSnapshotHandled = false;
+let cloudReady = false;
+let pendingCloudSave = false;
+let cloudDocRef = null, setDocFn = null, onSnapshotFn = null;
+
+function getLocalTs(){ return parseInt(localStorage.getItem(TS_KEY) || '0', 10); }
+function setLocalTs(ts){ try{ localStorage.setItem(TS_KEY, String(ts)); }catch(e){} }
+
+function scheduleCloudSave(){
+  if(applyingRemoteUpdate) return; // non ri-mandare al cloud un aggiornamento appena ricevuto dal cloud
+  const ts = Date.now();
+  setLocalTs(ts); // scritto subito: sopravvive anche a un F5 immediato, prima che il cloud riceva la modifica
+  if(!cloudReady){ pendingCloudSave = true; return; }
+  if(cloudSaveTimeout) clearTimeout(cloudSaveTimeout);
+  const snapshot = JSON.stringify(state);
+  cloudSaveTimeout = setTimeout(()=>{
+    setDocFn(cloudDocRef, {data: snapshot, updatedAt: ts})
+      .catch(err=>{console.error(err); toast('Modifiche salvate solo su questo dispositivo (offline dal cloud)','warn');});
+  }, 400);
+}
+
+function rerenderAll(){
+  applyTheme();
+  render();
+  renderProjects();
+  renderMeals();
+}
+
+async function initFirebaseSync(){
+  try{
+    const [{ initializeApp }, { getFirestore, doc, setDoc, onSnapshot }, { getAuth, signInAnonymously, onAuthStateChanged }] = await Promise.all([
+      import("https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js"),
+      import("https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js")
+    ]);
+    const firebaseConfig = {
+      apiKey: "AIzaSyAanqWhRF_OsRD-XVYFcn11RmGMDMAbCuQ",
+      authDomain: "calendario-famiglia-79cc3.firebaseapp.com",
+      projectId: "calendario-famiglia-79cc3",
+      storageBucket: "calendario-famiglia-79cc3.firebasestorage.app",
+      messagingSenderId: "161183128508",
+      appId: "1:161183128508:web:32b9cd3019884bbf25a9b9"
+    };
+    const fbApp = initializeApp(firebaseConfig);
+    const db = getFirestore(fbApp);
+    const auth = getAuth(fbApp);
+    setDocFn = setDoc;
+    cloudDocRef = doc(db, "calendario", "famiglia");
+
+    const user = await signInAnonymously(auth).then(cred=>cred.user).catch(()=>null);
+    if(!user) throw new Error('Autenticazione cloud non riuscita');
+
+    onSnapshot(cloudDocRef, (snap)=>{
+      if(snap.exists()){
+        const remote = snap.data();
+        const remoteTs = remote && remote.updatedAt ? remote.updatedAt : 0;
+        const localTs = getLocalTs();
+        if(remote && remote.data && remote.data !== JSON.stringify(state)){
+          if(remoteTs < localTs){
+            // il locale è più recente del cloud: probabilmente un salvataggio precedente
+            // non era arrivato in tempo (es. F5 troppo rapido). Rimandiamo lo stato locale.
+            if(cloudReady){
+              setDocFn(cloudDocRef, {data: JSON.stringify(state), updatedAt: localTs})
+                .catch(err=>console.error(err));
+            }
+          } else if(editingId || editingProjectId){
+            return; // non sovrascrivere una modifica in corso
+          } else {
+            try{
+              const parsed = JSON.parse(remote.data);
+              applyingRemoteUpdate = true;
+              state = normalizeState(parsed);
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+              setLocalTs(remoteTs);
+              rerenderAll();
+              if(firstSnapshotHandled) toast('Calendario aggiornato','info');
+            } finally { applyingRemoteUpdate = false; }
+          }
+        }
+      } else {
+        setDoc(cloudDocRef, {data: JSON.stringify(state), updatedAt: getLocalTs() || Date.now()});
+      }
+      firstSnapshotHandled = true;
+    }, (err)=>{
+      console.error(err);
+      toast('Impossibile connettersi al cloud - modifiche solo locali','warn');
+    });
+
+    cloudReady = true;
+    if(pendingCloudSave){ pendingCloudSave=false; scheduleCloudSave(); }
+  }catch(err){
+    console.warn('Sincronizzazione cloud non disponibile in questo contesto:', err);
+    toast('Modalità solo locale: apri il file dal browser (non dall\'anteprima di Drive/OneDrive) per la sincronizzazione','warn');
+  }
+}
+
 const STORAGE_KEY = 'calendario-famiglia-v3';
 const DAYS = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
 const ICONS = ['⚽','🏫','🏃','🏊','🎹','🍽️','📚','🚗','🎵','⭐'];
@@ -474,8 +577,17 @@ function defaultData(){
 
 let state=loadState(), editingId=null, editingProjectId=null, selectedIcon=ICONS[0], selectedColor=null, activeMobileDay=0, dragSrcId=null;
 
+function normalizeState(p){
+  if(!p.timeSlots)p.timeSlots=[...new Set(p.events.map(e=>e.time))].sort();
+  if(!p.projects)p.projects=defaultData().projects;
+  if(!p.settings)p.settings={theme:'dark',view:'grid'};
+  migrateTraining(p);
+  if(!p.projectsSorted){p.projects=sortProjectsByStatus(p.projects);p.projectsSorted=true;}
+  if(!p.meals)p.meals={week:0,date:null,checked:{}};
+  return p;
+}
 function loadState(){
-  try{const raw=localStorage.getItem(STORAGE_KEY);if(raw){const p=JSON.parse(raw);if(!p.timeSlots)p.timeSlots=[...new Set(p.events.map(e=>e.time))].sort();if(!p.projects)p.projects=defaultData().projects;if(!p.settings)p.settings={theme:'dark',view:'grid'};migrateTraining(p);if(!p.projectsSorted){p.projects=sortProjectsByStatus(p.projects);p.projectsSorted=true;}if(!p.meals)p.meals={week:0,date:null,checked:{}};return p;}}
+  try{const raw=localStorage.getItem(STORAGE_KEY);if(raw){return normalizeState(JSON.parse(raw));}}
   catch(e){} return defaultData();
 }
 function migrateTraining(p){
@@ -488,7 +600,7 @@ function migrateTraining(p){
   if(!hasTraining(5)) p.events.push(mk(5,'10:00','Allenamento cardio','personale','paolo','🏋️'));
   if(!hasTraining(6)) p.events.push(mk(6,'10:00','Allenamento cardio','personale','paolo','🏋️'));
 }
-function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}}
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){} scheduleCloudSave();}
 function allTimes(){return [...state.timeSlots].sort();}
 function passesFilter(ev){switch(state.filter){case'paolo':return ev.resp==='paolo'||ev.resp==='condiviso';case'alessandra':return ev.resp==='alessandra'||ev.resp==='condiviso';case'figli':return ev.tipo==='figli';default:return true;}}
 
@@ -1440,6 +1552,13 @@ applyTheme();
 render();
 renderProjects();
 renderMeals();
+initFirebaseSync();
+window.addEventListener('beforeunload', ()=>{
+  if(cloudSaveTimeout && cloudReady && setDocFn && cloudDocRef){
+    clearTimeout(cloudSaveTimeout);
+    setDocFn(cloudDocRef, {data: JSON.stringify(state), updatedAt: getLocalTs()}).catch(()=>{});
+  }
+});
 </script>
 </body>
 </html>
