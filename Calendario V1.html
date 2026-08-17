@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Calendario Famiglia & Progetti</title>
+<title>Il Caos Organizzato</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Pacifico&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#12141a;--surface:#1b1e27;--surface-2:#232733;--surface-3:#2a2f3d;--border:#2c303c;
@@ -30,8 +30,7 @@
   .nav-tab.active{background:var(--surface-3);color:var(--text);border-color:var(--gold-dim);}
   .nav-tab:hover{color:var(--text);}
   header{margin-bottom:28px;}
-  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-dim);margin:0 0 8px;}
-  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(28px,4vw,40px);margin:0 0 6px;letter-spacing:-0.01em;}
+  h1{font-family:'Pacifico',cursive;font-weight:400;font-size:clamp(32px,5vw,48px);margin:0 0 6px;letter-spacing:0.02em;color:var(--gold);}
   .subtitle{color:var(--text-dim);font-size:14.5px;margin:0 0 18px;max-width:560px;line-height:1.5;}
   .toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border);}
   .filters{display:inline-flex;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:3px;gap:2px;}
@@ -47,11 +46,6 @@
   .btn-ghost{background:transparent;} .btn-danger{color:var(--danger);} .btn-danger:hover{background:var(--danger-bg);border-color:var(--danger);}
   .btn.active-view{background:var(--surface-3);color:var(--gold);border-color:var(--gold-dim);}
   input[type=file]{display:none;}
-  .routine{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px;}
-  .routine-item{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:7px 14px 7px 10px;font-size:12.5px;color:var(--text-dim);}
-  .routine-item .icon{font-size:14px;} .routine-item .rtime{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-weight:500;}
-  .routine-item .rlabel{background:transparent;border:none;color:var(--text-dim);font-family:inherit;font-size:12.5px;outline:none;cursor:text;min-width:20px;}
-  .routine-item .rlabel:focus{color:var(--text);}
   .grid-scroll{overflow-x:auto;overflow-y:auto;max-height:calc(100vh - 220px);border-radius:var(--radius);border:1px solid var(--border);}
   .calendar-grid{display:grid;grid-template-columns:66px repeat(7,minmax(150px,1fr));background:var(--border);gap:1px;min-width:1140px;}
   .cell{background:var(--surface);} .day-head{background:var(--surface-2);padding:12px 10px;font-family:'Fraunces',serif;font-size:15px;font-weight:500;text-align:center;color:var(--text);letter-spacing:0.01em;position:sticky;top:0;z-index:3;}
@@ -133,40 +127,11 @@
     .toolbar{flex-direction:column;align-items:stretch;gap:10px;} .filters{justify-content:center;width:100%;} .actions{justify-content:center;width:100%;}
     .btn{padding:11px 16px;font-size:14px;min-height:44px;} .chip{padding:10px 12px;font-size:14px;} .modal{max-width:none;width:100%;min-height:100dvh;border-radius:0;display:flex;flex-direction:column;justify-content:center;}
     .overlay{padding:0;align-items:stretch;} .modal h2{font-size:22px;} .field input,.field select,.field textarea{padding:12px;font-size:16px;}
-    .routine{justify-content:center;} .routine-item{padding:9px 16px;font-size:13px;} .legend{justify-content:center;font-size:13px;} h1{font-size:28px;} .subtitle{font-size:13px;} .filter-btn{padding:10px 14px;}
+    .legend{justify-content:center;font-size:13px;} h1{font-size:28px;} .subtitle{font-size:13px;} .filter-btn{padding:10px 14px;}
     .projects-grid{grid-template-columns:1fr;} #toast-container{left:12px;right:12px;bottom:12px;} .toast{max-width:none;}
   }
   @media (max-width:360px){.actions .btn span{display:none;}}
   @media (min-width:768px){.mobile-view{display:none!important;}}
-
-  .training-days{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
-  .td-btn{appearance:none;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:10px 16px;border-radius:999px;cursor:pointer;transition:all .15s ease;}
-  .td-btn:hover{color:var(--text);}
-  .td-btn.active{background:var(--surface-3);color:var(--gold);border-color:var(--gold-dim);}
-  .training-stage{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 22px 22px;position:relative;max-width:460px;border-top:3px solid var(--text-faint);transition:border-color .3s;}
-  .training-stage.work{border-top-color:var(--paolo);}
-  .training-stage.rest{border-top-color:var(--success);}
-  .ts-round{text-align:center;font-size:12px;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;font-family:'IBM Plex Mono',monospace;}
-  .ts-phase{text-align:center;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;padding:5px 0;margin-bottom:10px;color:var(--text-faint);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
-  .training-stage.work .ts-phase{color:var(--paolo);}
-  .training-stage.rest .ts-phase{color:var(--success);}
-  .ts-exercise{text-align:center;font-family:'Fraunces',serif;font-size:24px;font-weight:500;line-height:1.3;min-height:64px;display:flex;align-items:center;justify-content:center;padding:0 4px;margin-bottom:16px;color:var(--text);}
-  .ts-timer{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:64px;letter-spacing:.02em;margin-bottom:6px;color:var(--text);}
-  .ts-next{text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:20px;min-height:16px;}
-  .ts-bar-track{width:100%;height:3px;background:var(--surface-3);margin-bottom:22px;overflow:hidden;border-radius:2px;}
-  .ts-bar-fill{height:100%;background:var(--text-faint);width:100%;transition:width 1s linear;}
-  .training-stage.work .ts-bar-fill{background:var(--paolo);}
-  .training-stage.rest .ts-bar-fill{background:var(--success);}
-  .ts-controls{display:flex;gap:10px;}
-  .ts-controls .btn{flex:1;justify-content:center;}
-  .training-list{max-width:460px;margin-top:22px;border-top:1px solid var(--border);padding-top:14px;}
-  .tl-title{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-faint);margin-bottom:10px;font-family:'IBM Plex Mono',monospace;}
-  .tl-item{display:flex;gap:12px;font-size:13px;padding:7px 0;color:var(--text-dim);border-bottom:1px solid var(--border);}
-  .tl-item.active{color:var(--text);font-weight:600;}
-  .tl-item .num{width:18px;color:var(--text-faint);font-family:'IBM Plex Mono',monospace;}
-  .ts-done{text-align:center;padding:36px 10px 8px;}
-  .ts-done .big{font-family:'Fraunces',serif;font-size:21px;margin-bottom:8px;color:var(--text);}
-  .ts-done .small{font-size:13px;color:var(--text-dim);}
 
   /* ---- Sezione Pasti e spesa ---- */
   .meal-grid{display:grid;grid-template-columns:1fr;gap:20px;}
@@ -191,6 +156,21 @@
   .meal-controls input[type="date"]{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:var(--radius-sm);padding:8px 10px;font-family:'Inter',sans-serif;font-size:13px;outline:none;}
   .meal-controls input[type="date"]:focus{border-color:var(--gold-dim);}
   .meal-week-label{font-weight:600;padding:6px 12px;background:var(--surface-2);border-radius:var(--radius-sm);font-size:14px;}
+
+  /* Bottom actions bar */
+  .bottom-actions {
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .bottom-actions .btn {
+    font-size: 12px;
+    padding: 8px 14px;
+  }
 </style>
 </head>
 <body>
@@ -198,12 +178,10 @@
   <div class="top-nav" id="topNav">
     <button class="nav-tab active" data-page="calendar">📅 Calendario</button>
     <button class="nav-tab" data-page="projects">🎯 Progetti</button>
-    <button class="nav-tab" data-page="training">🏋️ Allenamento Paolo</button>
     <button class="nav-tab" data-page="meals">🍽️ Pasti & Spesa</button>
   </div>
   <header>
-    <p class="eyebrow">Casa · Settimana tipo</p>
-    <h1>Calendario Famiglia</h1>
+    <h1>Il Caos Organizzato</h1>
   </header>
   <div id="calendarPage">
     <div class="toolbar">
@@ -213,18 +191,7 @@
         <button class="filter-btn" data-filter="alessandra"><span class="dot"></span>Alessandra</button>
         <button class="filter-btn" data-filter="figli"><span class="dot"></span>Ragazzi</button>
       </div>
-      <div class="actions">
-        <button class="btn" id="btnTheme" title="Tema">🌓</button>
-        <button class="btn" id="btnView" title="Vista">📋</button>
-        <button class="btn" id="btnTimes"><span>⏱</span> Fasce</button>
-        <button class="btn btn-primary" id="btnAdd"><span>+</span> Attività</button>
-        <button class="btn" id="btnExport"><span>↓</span> Esporta</button>
-        <button class="btn" id="btnImport"><span>↑</span> Importa</button>
-        <input type="file" id="fileImport" accept="application/json">
-        <button class="btn btn-ghost btn-danger" id="btnReset"><span>↺</span> Ripristina</button>
-      </div>
     </div>
-    <div class="routine" id="routine"></div>
     <div class="grid-scroll" id="desktopGridWrap">
       <div class="calendar-grid" id="grid"></div>
     </div>
@@ -236,6 +203,18 @@
     <div class="legend">
       <span>Ogni attività ha un colore proprio</span>
       <span>Trascina per spostare · clicca per modificare</span>
+    </div>
+
+    <!-- Bottom actions bar -->
+    <div class="bottom-actions">
+      <button class="btn" id="btnTheme" title="Tema">🌓 Tema</button>
+      <button class="btn" id="btnView" title="Vista">📋 Vista</button>
+      <button class="btn" id="btnTimes"><span>⏱</span> Fasce</button>
+      <button class="btn btn-primary" id="btnAdd"><span>+</span> Attività</button>
+      <button class="btn" id="btnExport"><span>↓</span> Esporta</button>
+      <button class="btn" id="btnImport"><span>↑</span> Importa</button>
+      <input type="file" id="fileImport" accept="application/json">
+      <button class="btn btn-ghost btn-danger" id="btnReset"><span>↺</span> Ripristina</button>
     </div>
   </div>
   <div id="projectsPage" style="display:none;">
@@ -251,32 +230,6 @@
       <input type="text" id="projSearch" placeholder="Cerca progetto...">
     </div>
     <div class="projects-grid" id="projectsGrid"></div>
-  </div>
-  <div id="trainingPage" style="display:none;">
-    <div class="toolbar" style="border-bottom:none;margin-bottom:12px;">
-      <div>
-        <h2 style="font-family:'Fraunces',serif;font-size:22px;margin:0 0 4px;">Cardio Paolo — 4×/settimana</h2>
-        <p style="color:var(--text-dim);font-size:13px;margin:0;max-width:520px;">Obiettivo dimagrimento: solo lavoro aerobico, low impact, senza salti né sovraccarichi sulle ginocchia. Un circuito diverso per giorno, ma sempre full-body — così anche saltando una seduta resta tutto equilibrato.</p>
-      </div>
-    </div>
-    <div class="training-days" id="trainingDays"></div>
-    <div class="training-stage" id="trainingStage">
-      <div class="ts-round" id="tsRound">Pronto</div>
-      <div class="ts-phase" id="tsPhase">—</div>
-      <div class="ts-exercise" id="tsExercise">Scegli il giorno e tocca Avvia</div>
-      <div class="ts-timer" id="tsTimer">00:45</div>
-      <div class="ts-next" id="tsNext">&nbsp;</div>
-      <div class="ts-bar-track"><div class="ts-bar-fill" id="tsBarFill"></div></div>
-      <div class="ts-controls">
-        <button class="btn btn-primary" id="tsStart">Avvia</button>
-        <button class="btn" id="tsPause" disabled>Pausa</button>
-        <button class="btn btn-ghost" id="tsReset">Reset</button>
-      </div>
-    </div>
-    <div class="training-list" id="trainingList">
-      <div class="tl-title">Sequenza del giorno (per giro)</div>
-      <div id="tlItems"></div>
-    </div>
   </div>
 
   <!-- Pasti e spesa -->
@@ -361,9 +314,6 @@
 </div>
 <script>
 /* ---------- Sincronizzazione cloud (Firebase) - opzionale e non bloccante ---------- */
-/* Se il file viene aperto dentro un anteprima sandboxata (Drive, OneDrive) che blocca
-   script esterni, questa parte fallisce silenziosamente e l'app continua a funzionare
-   in locale con localStorage, esattamente come prima. */
 const TS_KEY = 'calendario-famiglia-v3-ts';
 let cloudSaveTimeout = null;
 let applyingRemoteUpdate = false;
@@ -376,9 +326,9 @@ function getLocalTs(){ return parseInt(localStorage.getItem(TS_KEY) || '0', 10);
 function setLocalTs(ts){ try{ localStorage.setItem(TS_KEY, String(ts)); }catch(e){} }
 
 function scheduleCloudSave(){
-  if(applyingRemoteUpdate) return; // non ri-mandare al cloud un aggiornamento appena ricevuto dal cloud
+  if(applyingRemoteUpdate) return;
   const ts = Date.now();
-  setLocalTs(ts); // scritto subito: sopravvive anche a un F5 immediato, prima che il cloud riceva la modifica
+  setLocalTs(ts);
   if(!cloudReady){ pendingCloudSave = true; return; }
   if(cloudSaveTimeout) clearTimeout(cloudSaveTimeout);
   const snapshot = JSON.stringify(state);
@@ -426,14 +376,12 @@ async function initFirebaseSync(){
         const localTs = getLocalTs();
         if(remote && remote.data && remote.data !== JSON.stringify(state)){
           if(remoteTs < localTs){
-            // il locale è più recente del cloud: probabilmente un salvataggio precedente
-            // non era arrivato in tempo (es. F5 troppo rapido). Rimandiamo lo stato locale.
             if(cloudReady){
               setDocFn(cloudDocRef, {data: JSON.stringify(state), updatedAt: localTs})
                 .catch(err=>console.error(err));
             }
           } else if(editingId || editingProjectId){
-            return; // non sovrascrivere una modifica in corso
+            return;
           } else {
             try{
               const parsed = JSON.parse(remote.data);
@@ -581,7 +529,6 @@ function normalizeState(p){
   if(!p.timeSlots)p.timeSlots=[...new Set(p.events.map(e=>e.time))].sort();
   if(!p.projects)p.projects=defaultData().projects;
   if(!p.settings)p.settings={theme:'dark',view:'grid'};
-  if(!p.trainingMigrated){ migrateTraining(p); p.trainingMigrated = true; }
   if(!p.projectsSorted){p.projects=sortProjectsByStatus(p.projects);p.projectsSorted=true;}
   if(!p.meals)p.meals={week:0,date:null,checked:{}};
   return p;
@@ -589,18 +536,6 @@ function normalizeState(p){
 function loadState(){
   try{const raw=localStorage.getItem(STORAGE_KEY);if(raw){return normalizeState(JSON.parse(raw));}}
   catch(e){} return defaultData();
-}
-function migrateTraining(p){
-  // Migrazione una tantum (protetta da p.trainingMigrated): aggiunge gli allenamenti
-  // di default solo la primissima volta. Dopo, se li cancelli, restano cancellati.
-  const need=[['20:00'],['10:00']];
-  need.forEach(arr=>arr.forEach(t=>{if(!p.timeSlots.includes(t))p.timeSlots.push(t);}));
-  const hasTraining=(day)=>p.events.some(e=>e.day===day && e.label==='Allenamento cardio');
-  const mk=(day,time,label,tipo,resp,icon)=>({id:uuid(),day,time,label,tipo,resp,icon,note:'',color:null});
-  if(!hasTraining(2)) p.events.push(mk(2,'20:00','Allenamento cardio','personale','paolo','🏋️'));
-  if(!hasTraining(4)) p.events.push(mk(4,'20:00','Allenamento cardio','personale','paolo','🏋️'));
-  if(!hasTraining(5)) p.events.push(mk(5,'10:00','Allenamento cardio','personale','paolo','🏋️'));
-  if(!hasTraining(6)) p.events.push(mk(6,'10:00','Allenamento cardio','personale','paolo','🏋️'));
 }
 function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){} scheduleCloudSave();}
 function allTimes(){return [...state.timeSlots].sort();}
@@ -621,21 +556,13 @@ function toggleTheme(){state.settings.theme=state.settings.theme==='dark'?'light
 function showPage(page){
   document.getElementById('calendarPage').style.display=page==='calendar'?'block':'none';
   document.getElementById('projectsPage').style.display=page==='projects'?'block':'none';
-  document.getElementById('trainingPage').style.display=page==='training'?'block':'none';
   document.getElementById('mealsPage').style.display=page==='meals'?'block':'none';
   document.querySelectorAll('.nav-tab').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
   if(page==='calendar')render();
   if(page==='projects')renderProjects();
-  if(page==='training')initTraining();
   if(page==='meals')renderMeals();
 }
 document.getElementById('topNav').addEventListener('click',e=>{const b=e.target.closest('.nav-tab');if(b)showPage(b.dataset.page);});
-
-function renderRoutine(){
-  const el=document.getElementById('routine'); const r=state.routine,rt=state.routineTimes;
-  el.innerHTML=`<div class="routine-item"><span class="icon">☀️</span><span class="rtime">${rt.sveglia}</span><span class="rlabel" contenteditable="true" data-key="sveglia">${r.sveglia}</span></div><div class="routine-item"><span class="icon">🚗</span><span class="rtime">${rt.partenza}</span><span class="rlabel" contenteditable="true" data-key="partenza">${r.partenza}</span></div><div class="routine-item"><span class="icon">🌙</span><span class="rtime">${rt.nanna}</span><span class="rlabel" contenteditable="true" data-key="nanna">${r.nanna}</span></div>`;
-  el.querySelectorAll('.rlabel').forEach(node=>{node.addEventListener('blur',()=>{state.routine[node.dataset.key]=node.textContent.trim()||node.dataset.key;saveState();});});
-}
 
 function renderGrid(){
   const grid=document.getElementById('grid'); const times=allTimes();
@@ -755,7 +682,6 @@ document.getElementById('btnTheme').addEventListener('click',toggleTheme);
 
 function render(){
   applyTheme();
-  renderRoutine();
   renderFilterButtons();
   computeColorAssignments();
   renderGrid();
@@ -1234,179 +1160,8 @@ document.addEventListener('keydown',e=>{
   if(projectOverlay.classList.contains('open')) closeProjectModal();
 });
 
-/* ---------- Allenamento Paolo ---------- */
-const TRAINING_PLAN = {
-  mer:{label:'Mercoledì',exercises:['Marcia sul posto, ginocchia alte','Squat pulse leggero','Shadow boxing','Mountain climber lento','Affondo indietro alternato','Plank walk']},
-  ven:{label:'Venerdì',exercises:['High knees con torsione','Affondo laterale lento','Punch-jab in movimento','Glute bridge march','Jumping jack senza salto','Bird dog dinamico']},
-  sab:{label:'Sabato',exercises:['Skater lento (senza salto)','Squat + press immaginario','Mountain climber lento','Plank shoulder tap','Marcia alta con braccia','Affondo indietro alternato']},
-  dom:{label:'Domenica',exercises:['Shadow boxing','Squat pulse leggero','Mountain climber lento','Jumping jack senza salto','Affondo laterale lento','High knees con torsione']}
-};
-const TR_WORK=45, TR_REST=15, TR_ROUNDS=4, TR_WARMUP=20;
-let trDay='mer', trSequence=[], trStepIdx=0, trSecLeft=0, trHandle=null, trRunning=false, trInited=false;
-
-function trBuildSequence(dayKey){
-  const ex = TRAINING_PLAN[dayKey].exercises;
-  const seq=[{type:'warmup',duration:TR_WARMUP}];
-  for(let r=1;r<=TR_ROUNDS;r++){
-    ex.forEach((name,i)=>{
-      seq.push({type:'work',exIndex:i,round:r,duration:TR_WORK,name});
-      const isLast=(r===TR_ROUNDS && i===ex.length-1);
-      if(!isLast) seq.push({type:'rest',exIndex:i,round:r,duration:TR_REST});
-    });
-  }
-  seq.push({type:'done',duration:0});
-  return seq;
-}
-
-function trFmt(s){const m=Math.floor(s/60).toString().padStart(2,'0');const ss=(s%60).toString().padStart(2,'0');return m+':'+ss;}
-
-function trBeep(freq=880,dur=140){
-  try{
-    const ctx=new (window.AudioContext||window.webkitAudioContext)();
-    const o=ctx.createOscillator(),g=ctx.createGain();
-    o.frequency.value=freq;o.type='sine';
-    g.gain.setValueAtTime(0.15,ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur/1000);
-    o.connect(g);g.connect(ctx.destination);
-    o.start();o.stop(ctx.currentTime+dur/1000);
-  }catch(e){}
-}
-function trVibrate(p){if(navigator.vibrate) navigator.vibrate(p);}
-
-function renderTrainingDays(){
-  const el=document.getElementById('trainingDays');
-  el.innerHTML=Object.keys(TRAINING_PLAN).map(k=>`<button class="td-btn ${k===trDay?'active':''}" data-day="${k}">${TRAINING_PLAN[k].label}</button>`).join('');
-}
-document.getElementById('trainingDays').addEventListener('click',e=>{
-  const b=e.target.closest('.td-btn');
-  if(!b) return;
-  trDay=b.dataset.day;
-  renderTrainingDays();
-  trResetToIdle();
-});
-
-function renderTrainingList(){
-  const wrap=document.getElementById('tlItems');
-  wrap.innerHTML=TRAINING_PLAN[trDay].exercises.map((name,i)=>`<div class="tl-item" id="tl-${i}"><span class="num">${(i+1).toString().padStart(2,'0')}</span><span>${name}</span></div>`).join('');
-}
-
-function trClearActiveList(){document.querySelectorAll('.tl-item').forEach(el=>el.classList.remove('active'));}
-
-function trRenderStep(){
-  const step=trSequence[trStepIdx];
-  const stage=document.getElementById('trainingStage');
-  const round=document.getElementById('tsRound');
-  const phase=document.getElementById('tsPhase');
-  const exerciseEl=document.getElementById('tsExercise');
-  const timerEl=document.getElementById('tsTimer');
-  const nextEl=document.getElementById('tsNext');
-  const barFill=document.getElementById('tsBarFill');
-  const ex=TRAINING_PLAN[trDay].exercises;
-  trClearActiveList();
-
-  if(step.type==='warmup'){
-    stage.className='training-stage';
-    round.textContent='Preparati — '+TRAINING_PLAN[trDay].label;
-    phase.textContent='Riscaldamento';
-    exerciseEl.textContent='Marcia leggera, sciogli spalle e anche';
-    nextEl.textContent='Poi: '+ex[0];
-  } else if(step.type==='work'){
-    stage.className='training-stage work';
-    round.textContent='Giro '+step.round+' di '+TR_ROUNDS;
-    phase.textContent='Lavoro';
-    exerciseEl.textContent=step.name;
-    const li=document.getElementById('tl-'+step.exIndex); if(li) li.classList.add('active');
-    const nextIdx=step.exIndex+1;
-    if(nextIdx<ex.length) nextEl.textContent='Poi: '+ex[nextIdx];
-    else if(step.round<TR_ROUNDS) nextEl.textContent='Poi: giro '+(step.round+1);
-    else nextEl.textContent='Ultimo esercizio del circuito';
-  } else if(step.type==='rest'){
-    stage.className='training-stage rest';
-    round.textContent='Giro '+step.round+' di '+TR_ROUNDS;
-    phase.textContent='Recupero';
-    exerciseEl.textContent='Respira';
-    const nextIdx=step.exIndex+1;
-    if(nextIdx<ex.length) nextEl.textContent='Prossimo: '+ex[nextIdx];
-    else nextEl.textContent='Prossimo: giro '+(step.round+1);
-  } else if(step.type==='done'){
-    trShowDone();
-    return;
-  }
-  trSecLeft=step.duration;
-  timerEl.textContent=trFmt(trSecLeft);
-  barFill.style.width='100%';
-}
-
-function trShowDone(){
-  const totalMin=Math.round((TR_WARMUP+TR_ROUNDS*(TRAINING_PLAN[trDay].exercises.length*TR_WORK+(TRAINING_PLAN[trDay].exercises.length-1)*TR_REST))/60);
-  document.getElementById('trainingStage').innerHTML=`<div class="ts-done"><div class="big">Circuito completato</div><div class="small">${TRAINING_PLAN[trDay].label} · ${TR_ROUNDS} giri · circa ${totalMin} min</div></div>`;
-  clearInterval(trHandle);
-  trRunning=false;
-  trBeep(660,300);
-}
-
-function trTick(){
-  trSecLeft-=1;
-  const step=trSequence[trStepIdx];
-  if(trSecLeft<=0){
-    trStepIdx+=1;
-    if(trSequence[trStepIdx].type==='done'){trRenderStep();return;}
-    if(trSequence[trStepIdx].type==='work'){trBeep(880,160);trVibrate([120,60,120]);}
-    else{trBeep(440,160);trVibrate(100);}
-    trRenderStep();
-    return;
-  }
-  if(trSecLeft<=3) trBeep(600,80);
-  document.getElementById('tsTimer').textContent=trFmt(trSecLeft);
-  document.getElementById('tsBarFill').style.width=((trSecLeft/step.duration)*100)+'%';
-}
-
-function trStart(){
-  if(trRunning) return;
-  trRunning=true;
-  document.getElementById('tsStart').disabled=true;
-  document.getElementById('tsPause').disabled=false;
-  document.getElementById('tsPause').textContent='Pausa';
-  if(document.getElementById('tsStart').textContent==='Avvia' && trStepIdx===0 && trSecLeft===trSequence[0].duration) trRenderStep();
-  trHandle=setInterval(trTick,1000);
-}
-function trPause(){
-  if(!trRunning) return;
-  trRunning=false;
-  clearInterval(trHandle);
-  document.getElementById('tsPause').textContent='Riprendi';
-  document.getElementById('tsStart').disabled=false;
-}
-function trResetToIdle(){
-  clearInterval(trHandle);
-  trRunning=false;
-  trStepIdx=0;
-  trSequence=trBuildSequence(trDay);
-  trSecLeft=trSequence[0].duration;
-  const stage=document.getElementById('trainingStage');
-  stage.className='training-stage';
-  stage.innerHTML=`<div class="ts-round" id="tsRound">Pronto — ${TRAINING_PLAN[trDay].label}</div><div class="ts-phase" id="tsPhase">—</div><div class="ts-exercise" id="tsExercise">Tocca Avvia per cominciare</div><div class="ts-timer" id="tsTimer">${trFmt(trSecLeft)}</div><div class="ts-next" id="tsNext">&nbsp;</div><div class="ts-bar-track"><div class="ts-bar-fill" id="tsBarFill"></div></div><div class="ts-controls"><button class="btn btn-primary" id="tsStart">Avvia</button><button class="btn" id="tsPause" disabled>Pausa</button><button class="btn btn-ghost" id="tsReset">Reset</button></div>`;
-  trBindStageButtons();
-  trClearActiveList();
-  renderTrainingList();
-}
-function trBindStageButtons(){
-  document.getElementById('tsStart').addEventListener('click',()=>{
-    const b=document.getElementById('tsStart');
-    if(b.textContent==='Riprendi'){trStart();b.textContent='Avvia';b.disabled=true;return;}
-    trStart();
-  });
-  document.getElementById('tsPause').addEventListener('click',trPause);
-  document.getElementById('tsReset').addEventListener('click',trResetToIdle);
-}
-function initTraining(){
-  if(!trInited){renderTrainingDays();trInited=true;}
-  trResetToIdle();
-}
-
 /* ---------- Pasti e spesa ---------- */
 const MEAL_DATA = [
-  // settimana 1
   {
     days:[
       {day:'Lunedì', lunch:'Riso/Pasta con verdure + Uova sode/strapazzate + Carote + Frutta', school:'Pasta al pesto rosso, Pollo al forno, Insalata mista, Dessert', dinner:'Pesce + Zucchine + Frutta fresca di stagione'},
@@ -1417,7 +1172,6 @@ const MEAL_DATA = [
     ],
     shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Pesce (3 porz. tot)','Carne bianca (2 porz. tot)','Carne rossa (1 porz.)','Uova (~12 uova)','Legumi (ceci/lenticchie)','Formaggio fresco / Ricotta'], 'Verdura':['Zucchine','Insalata mista / verde','Pomodori & Carote','Finocchi & Spinaci'], 'Frutta':['Frutta fresca di stagione (quantità per 5 giorni pranzo e cena)'] }
   },
-  // settimana 2
   {
     days:[
       {day:'Lunedì', lunch:'Pasta con verdure + Carne bianca + Pomodori + Frutta', school:'', dinner:'Uova + Bietole + Frutta fresca di stagione'},
@@ -1428,7 +1182,6 @@ const MEAL_DATA = [
     ],
     shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Carne bianca (3 porz. tot)','Pesce (2 porz. tot)','Uova (2 porz. tot)','Legumi (2 porz. tot)','Formaggio fresco (2 porz. tot)'], 'Verdura':['Pomodori & Carote','Insalata mista / verde','Zucchine & Fagiolini','Bietole, Finocchi, Melanzane'], 'Frutta':['Frutta fresca di stagione'] }
   },
-  // settimana 3
   {
     days:[
       {day:'Lunedì', lunch:'Pasta e ceci/lenticchie + Carote + Frutta', school:'', dinner:'Carne rossa + Fagiolini + Frutta fresca di stagione'},
@@ -1439,7 +1192,6 @@ const MEAL_DATA = [
     ],
     shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Legumi (3 porz. tot)','Pesce (2 porz. tot)','Carne bianca (2 porz. tot)','Carne rossa (1 porz.)','Uova (1 porz.)','Formaggio magro / fresco'], 'Verdura':['Carote & Insalata verde','Finocchi & Zucchine','Pomodori & Fagiolini','Broccoli / Cime di rapa'], 'Frutta':['Frutta fresca di stagione'] }
   },
-  // settimana 4
   {
     days:[
       {day:'Lunedì', lunch:'Pasta al pomodoro + Pesce + Carote + Frutta', school:'', dinner:'Formaggio magro + Zucchine + Frutta fresca di stagione'},
@@ -1463,8 +1215,7 @@ function getMonday(date) {
 
 function getWeekIndexFromDate(date) {
   const monday = getMonday(date);
-  // Usiamo una data di riferimento fissa: il primo lunedì noto (es. 2026-01-05)
-  const ref = new Date(2026, 0, 5); // 5 gennaio 2026 è lunedì
+  const ref = new Date(2026, 0, 5);
   const diffWeeks = Math.floor((monday - ref) / (7 * 24 * 60 * 60 * 1000));
   return ((diffWeeks % MEAL_DATA.length) + MEAL_DATA.length) % MEAL_DATA.length;
 }
@@ -1489,7 +1240,6 @@ function renderMeals(){
   html+=`</tbody></table></div>`;
   document.getElementById('mealGrid').innerHTML = html;
 
-  // Shopping list
   const shop = data.shopping;
   const key = `week-${weekIndex}`;
   if (!state.meals.checked) state.meals.checked = {};
@@ -1506,7 +1256,6 @@ function renderMeals(){
   });
   document.getElementById('shoppingGrid').innerHTML = shopHtml;
 
-  // Event listeners per checkbox
   document.querySelectorAll('#shoppingGrid input[type="checkbox"]').forEach(cb=>{
     cb.addEventListener('change', function(){
       const weekKey = this.dataset.week;
