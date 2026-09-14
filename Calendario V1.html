@@ -1372,80 +1372,108 @@ document.addEventListener('keydown',e=>{
 
 /* ---------- Pasti e spesa ---------- */
 const MEAL_DATA = [
+  // Settimana 2 (es. dal 14/09/2026 al 18/09/2026)
   {
     days:[
-      {day:'Lunedì', lunch:'Riso/Pasta con verdure + Uova sode/strapazzate + Carote + Frutta', school:'Pasta al pesto rosso, Pollo al forno, Insalata mista, Dessert', dinner:'Pesce + Zucchine + Frutta fresca di stagione'},
-      {day:'Martedì', lunch:'Pasta al pomodoro + Pesce al vapore/griglia + Insalata mista + Frutta', school:'Pasta all\'olio, Polpette di legumi, Zucchine al forno, Frutta', dinner:'Uova + Spinaci + Frutta fresca di stagione'},
-      {day:'Mercoledì', lunch:'Riso/Pasta all\'olio + Formaggio fresco/Ricotta + Pomodori + Frutta', school:'Pasta al ragù di verdure, Filetto di pesce impanato, Carote julienne, Frutta', dinner:'Carne bianca + Insalata verde + Frutta fresca di stagione'},
-      {day:'Giovedì', lunch:'Pasta al pomodoro o pesto + Carne bianca + Zucchine + Frutta', school:'Risotto alle zucchine, Polpette di bovino al forno, Insalata di pomodori, Frutta', dinner:'Legumi + Carote + Frutta fresca di stagione'},
-      {day:'Venerdì', lunch:'Pasta con legumi (ceci/lenticchie) + Finocchi/Insalata + Frutta', school:'Pasta al pomodoro e olive, Formaggio fresco, Insalata di fagiolini, Frutta', dinner:'Carne rossa + Pomodori + Frutta fresca di stagione'},
+      {day:'Lunedì', lunch:{primo:"Pasta al pomodoro e olive", secondo:"Arrosto di tacchino freddo", contorno:"Carote julienne", extra:"Frutta fresca di stagione"}, dinner:'Pesce + Zucchine + Frutta fresca di stagione'},
+      {day:'Martedì', lunch:{primo:"Riso all'olio extravergine", secondo:"Tonno", contorno:"Fagiolini e pomodori", extra:"Frutta fresca di stagione"}, dinner:'Uova + Spinaci + Frutta fresca di stagione'},
+      {day:'Mercoledì', lunch:{primo:"Pasta al pomodoro", secondo:"Frittata alle verdure", contorno:"Piselli* al forno", extra:"Dessert"}, dinner:'Legumi + Carote + Frutta fresca di stagione'},
+      {day:'Giovedì', lunch:{primo:"Pasta all'olio extravergine", secondo:"Pollo al forno", contorno:"Insalata mista", extra:"Frutta fresca di stagione"}, dinner:'Formaggio magro + Finocchi + Frutta fresca di stagione'},
+      {day:'Venerdì', lunch:{primo:"Pasta al pesto rosso", secondo:"Formaggio fresco", contorno:"Zucchine al forno", extra:"Frutta fresca di stagione"}, dinner:'Carne rossa + Insalata mista + Frutta fresca di stagione'},
     ],
-    shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Pesce (3 porz. tot)','Carne bianca (2 porz. tot)','Carne rossa (1 porz.)','Uova (~12 uova)','Legumi (ceci/lenticchie)','Formaggio fresco / Ricotta'], 'Verdura':['Zucchine','Insalata mista / verde','Pomodori & Carote','Finocchi & Spinaci'], 'Frutta':['Frutta fresca di stagione (quantità per 5 giorni pranzo e cena)'] }
+    shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Pesce (1 porz.)','Uova (1 porz.)','Legumi (1 porz.)','Formaggio magro (1 porz.)','Carne rossa (1 porz.)'], 'Verdura':['Zucchine','Spinaci','Carote','Finocchi','Insalata mista'], 'Frutta':['Frutta fresca di stagione (per 5 giorni pranzo e cena)'] }
   },
+  // Settimana 3 (es. dal 21/09/2026 al 25/09/2026)
   {
     days:[
-      {day:'Lunedì', lunch:'Pasta con verdure + Carne bianca + Pomodori + Frutta', school:'', dinner:'Uova + Bietole + Frutta fresca di stagione'},
-      {day:'Martedì', lunch:'Riso con legumi (o pasta e fagioli) + Carote + Frutta', school:'', dinner:'Carne bianca + Finocchi + Frutta fresca di stagione'},
-      {day:'Mercoledì', lunch:'Pasta al pomodoro + Pesce + Insalata + Frutta', school:'', dinner:'Legumi + Zucchine + Frutta fresca di stagione'},
-      {day:'Giovedì', lunch:'Riso al pomodoro/verdure + Formaggio fresco + Zucchine + Frutta', school:'', dinner:'Pesce + Insalata mista + Frutta fresca di stagione'},
-      {day:'Venerdì', lunch:'Pasta all\'olio + Uova + Fagiolini + Frutta', school:'', dinner:'Formaggio fresco + Melanzane + Frutta fresca di stagione'},
+      {day:'Lunedì', lunch:{primo:"Trancio di pizza Margherita", secondo:"1/2 porzione di affettato di prosciutto cotto", contorno:"Insalata di pomodori", extra:"Frutta fresca di stagione"}, dinner:'Pesce + Broccoli + Frutta fresca di stagione'},
+      {day:'Martedì', lunch:{primo:"Pasta alla crema di pesto", secondo:"Girotondi di verdure", contorno:"Carote julienne", extra:"Dessert"}, dinner:'Legumi + Carote + Frutta fresca di stagione'},
+      {day:'Mercoledì', lunch:{primo:"Riso ai *piselli", secondo:"Formaggio fresco", contorno:"Zucchine al forno", extra:"Frutta fresca di stagione"}, dinner:'Carne bianca + Melanzane + Frutta fresca di stagione'},
+      {day:'Giovedì', lunch:{primo:"Pasta al pomodoro", secondo:"Milanese di pollo al forno", contorno:"Insalata mista", extra:"Frutta fresca di stagione"}, dinner:'Uova + Bietole + Frutta fresca di stagione'},
+      {day:'Venerdì', lunch:{primo:"Pasta all'olio extravergine", secondo:"Burger di *pesce al forno", contorno:"Fagiolini al forno", extra:"Frutta fresca di stagione"}, dinner:'Formaggio magro + Zucchine + Frutta fresca di stagione'},
     ],
-    shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Carne bianca (3 porz. tot)','Pesce (2 porz. tot)','Uova (2 porz. tot)','Legumi (2 porz. tot)','Formaggio fresco (2 porz. tot)'], 'Verdura':['Pomodori & Carote','Insalata mista / verde','Zucchine & Fagiolini','Bietole, Finocchi, Melanzane'], 'Frutta':['Frutta fresca di stagione'] }
+    shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Pesce (1 porz.)','Legumi (1 porz.)','Carne bianca (1 porz.)','Uova (1 porz.)','Formaggio magro (1 porz.)'], 'Verdura':['Broccoli','Carote','Melanzane','Bietole','Zucchine'], 'Frutta':['Frutta fresca di stagione'] }
   },
+  // Settimana 4 (es. dal 28/09/2026 al 04/10/2026)
   {
     days:[
-      {day:'Lunedì', lunch:'Pasta e ceci/lenticchie + Carote + Frutta', school:'', dinner:'Carne rossa + Fagiolini + Frutta fresca di stagione'},
-      {day:'Martedì', lunch:'Riso alle verdure + Carne bianca + Insalata + Frutta', school:'', dinner:'Pesce + Carote + Frutta fresca di stagione'},
-      {day:'Mercoledì', lunch:'Pasta al pomodoro + Pesce + Finocchi + Frutta', school:'', dinner:'Uova + Pomodori + Frutta fresca di stagione'},
-      {day:'Giovedì', lunch:'Pasta al pesto/olio + Legumi + Zucchine + Frutta', school:'', dinner:'Carne bianca + Insalata verde + Frutta fresca di stagione'},
-      {day:'Venerdì', lunch:'Riso al pomodoro + Formaggio magro + Pomodori/Insalata + Frutta', school:'', dinner:'Legumi + Broccoli / Cime di rapa + Frutta fresca di stagione'},
+      {day:'Lunedì', lunch:{primo:"Pasta al pesto rosso", secondo:"Pollo al forno", contorno:"Insalata mista", extra:"Dessert"}, dinner:'Pesce + Finocchi + Frutta fresca di stagione'},
+      {day:'Martedì', lunch:{primo:"Pasta all'olio extravergine", secondo:"Polpette di legumi", contorno:"Zucchine al forno", extra:"Frutta fresca di stagione"}, dinner:'Uova + Carote + Frutta fresca di stagione'},
+      {day:'Mercoledì', lunch:{primo:"Pasta al ragù di verdure", secondo:"Filetto di pesce* impanato al forno", contorno:"Carote julienne", extra:"Frutta fresca di stagione"}, dinner:'Formaggio magro + Spinaci + Frutta fresca di stagione'},
+      {day:'Giovedì', lunch:{primo:"Risotto alle zucchine", secondo:"Polpette di bovino al forno", contorno:"Insalata di pomodori", extra:"Frutta fresca di stagione"}, dinner:'Legumi + Zucchine + Frutta fresca di stagione'},
+      {day:'Venerdì', lunch:{primo:"Pasta al pomodoro e olive", secondo:"Formaggio fresco", contorno:"Insalata di fagiolini*", extra:"Frutta fresca di stagione"}, dinner:'Carne bianca + Cavolfiore + Frutta fresca di stagione'},
     ],
-    shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Legumi (3 porz. tot)','Pesce (2 porz. tot)','Carne bianca (2 porz. tot)','Carne rossa (1 porz.)','Uova (1 porz.)','Formaggio magro / fresco'], 'Verdura':['Carote & Insalata verde','Finocchi & Zucchine','Pomodori & Fagiolini','Broccoli / Cime di rapa'], 'Frutta':['Frutta fresca di stagione'] }
+    shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Pesce (1 porz.)','Uova (1 porz.)','Formaggio magro (1 porz.)','Legumi (1 porz.)','Carne bianca (1 porz.)'], 'Verdura':['Finocchi','Carote','Spinaci','Zucchine','Cavolfiore'], 'Frutta':['Frutta fresca di stagione'] }
   },
+  // Settimana 1 (es. dal 07/09/2026 al 11/09/2026)
   {
     days:[
-      {day:'Lunedì', lunch:'Pasta al pomodoro + Pesce + Carote + Frutta', school:'', dinner:'Formaggio magro + Zucchine + Frutta fresca di stagione'},
-      {day:'Martedì', lunch:'Riso con verdure + Uova + Insalata + Frutta', school:'', dinner:'Legumi + Finocchi + Frutta fresca di stagione'},
-      {day:'Mercoledì', lunch:'Pasta con legumi + Zucchine + Frutta', school:'', dinner:'Pesce + Fagiolini + Frutta fresca di stagione'},
-      {day:'Giovedì', lunch:'Pasta al pomodoro + Carne bianca + Finocchi + Frutta', school:'', dinner:'Uova + Insalata mista + Frutta fresca di stagione'},
-      {day:'Venerdì', lunch:'Riso all\'olio/verdure + Carne rossa + Fagiolini + Frutta', school:'', dinner:'Carne bianca + Carote + Frutta fresca di stagione'},
+      {day:'Lunedì', lunch:{primo:"Pasta all'olio extravergine", secondo:"Formaggio fresco", contorno:"Insalata verde", extra:"Frutta fresca di stagione"}, dinner:'Pesce + Insalata verde + Frutta fresca di stagione'},
+      {day:'Martedì', lunch:{primo:"Trancio di pizza Margherita", secondo:"1/2 porzione di affettato di prosciutto cotto", contorno:"Carote julienne", extra:"Frutta fresca di stagione"}, dinner:'Legumi + Zucchine + Frutta fresca di stagione'},
+      {day:'Mercoledì', lunch:{primo:"Riso al pomodoro", secondo:"Hamburger di bovino", contorno:"Insalata di pomodori", extra:"Frutta fresca di stagione"}, dinner:'Uova + Pomodori + Frutta fresca di stagione'},
+      {day:'Giovedì', lunch:{primo:"Cous Cous alle verdure", secondo:"Girotondi di verdure", contorno:"Fagiolini* al forno", extra:"Frutta fresca di stagione"}, dinner:'Carne bianca + Fagiolini + Frutta fresca di stagione'},
+      {day:'Venerdì', lunch:{primo:"Pasta al pesto", secondo:"Filetto di pesce* impanato al forno", contorno:"Zucchine al forno", extra:"Frutta fresca di stagione"}, dinner:'Formaggio magro + Carote + Frutta fresca di stagione'},
     ],
-    shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Pesce (2 porz. tot)','Carne bianca (2 porz. tot)','Carne rossa (1 porz.)','Uova (2 porz. tot)','Legumi (2 porz. tot)','Formaggio magro / fresco'], 'Verdura':['Carote & Insalata mista','Zucchine & Finocchi','Fagiolini'], 'Frutta':['Frutta fresca di stagione'] }
+    shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Pesce (1 porz.)','Legumi (1 porz.)','Uova (1 porz.)','Carne bianca (1 porz.)','Formaggio magro (1 porz.)'], 'Verdura':['Insalata verde','Zucchine','Pomodori','Fagiolini','Carote'], 'Frutta':['Frutta fresca di stagione'] }
   }
 ];
 
 function getMonday(date) {
-  const d = new Date(date);
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
   const day = d.getDay();
   const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  d.setDate(diff);
-  d.setHours(0,0,0,0);
-  return d;
+  const monday = new Date(d.getFullYear(), d.getMonth(), diff);
+  monday.setHours(0,0,0,0);
+  return monday;
 }
 
 function getWeekIndexFromDate(date) {
   const monday = getMonday(date);
-  const ref = new Date(2026, 0, 5);
-  const diffWeeks = Math.floor((monday - ref) / (7 * 24 * 60 * 60 * 1000));
-  return ((diffWeeks % MEAL_DATA.length) + MEAL_DATA.length) % MEAL_DATA.length;
+  // Ancoraggio: Lunedì 07/09/2026 = Settimana 1 dell'anno scolastico
+  // Mese 8 = Settembre (0-indexed in Javascript)
+  const refMonday = new Date(2026, 8, 7);
+  refMonday.setHours(0,0,0,0);
+  
+  const diffTime = monday.getTime() - refMonday.getTime();
+  const diffDays = Math.round(diffTime / (24 * 60 * 60 * 1000));
+  const diffWeeks = Math.floor(diffDays / 7);
+  
+  // Calcolo ciclico a 4 settimane (con offset 3 per allineare le schede)
+  return (((diffWeeks + 3) % 4) + 4) % 4;
+}
+
+function formatDateLocal(d) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 function renderMeals(){
   const datePicker = document.getElementById('mealDatePicker');
-  let selectedDate = state.meals?.date ? new Date(state.meals.date) : new Date();
+  let selectedDate;
+  if (state.meals && state.meals.date) {
+    const [y, m, d] = state.meals.date.split('-').map(Number);
+    selectedDate = new Date(y, m - 1, d);
+  } else {
+    selectedDate = new Date();
+  }
   if (isNaN(selectedDate.getTime())) selectedDate = new Date();
   
   const monday = getMonday(selectedDate);
-  const dateStr = monday.toISOString().split('T')[0];
+  const dateStr = formatDateLocal(monday);
   datePicker.value = dateStr;
   
   const weekIndex = getWeekIndexFromDate(monday);
   const data = MEAL_DATA[weekIndex];
-  document.getElementById('mealWeekLabel').textContent = `Settimana ${weekIndex+1}`;
+  
+  // Mappatura numero settimana visualizzato (1, 2, 3, 4) in base all'indice
+  const weekDisplayNum = ((weekIndex + 1) % 4) === 0 ? 1 : weekIndex + 1;
+  document.getElementById('mealWeekLabel').textContent = `Settimana ${weekDisplayNum}`;
 
-  let html = `<div class="meal-week"><h3>Pasti settimana ${weekIndex+1} (dal ${monday.toLocaleDateString('it-IT')})</h3><table class="meal-table"><thead><tr><th>Giorno</th><th>Pranzo a Casa</th><th>Scuola</th><th>Cena</th></tr></thead><tbody>`;
+  let html = `<div class="meal-week"><h3>Pasti settimana ${weekDisplayNum} (dal ${monday.toLocaleDateString('it-IT')})</h3><table class="meal-table"><thead><tr><th>Giorno</th><th>Primo</th><th>Secondo</th><th>Contorno</th><th>Dessert / Frutta</th><th>Cena</th></tr></thead><tbody>`;
   data.days.forEach(d=>{
-    html+=`<tr><td class="day-name">${d.day}</td><td><span class="meal-content">${d.lunch}</span></td><td>${d.school ? `<span class="school">${d.school}</span>` : ''}</td><td><span class="meal-content">${d.dinner}</span></td></tr>`;
+    html+=`<tr><td class="day-name">${d.day}</td><td>${d.lunch.primo}</td><td>${d.lunch.secondo}</td><td>${d.lunch.contorno}</td><td>${d.lunch.extra}</td><td><span class="meal-content">${d.dinner}</span></td></tr>`;
   });
   html+=`</tbody></table></div>`;
   document.getElementById('mealGrid').innerHTML = html;
@@ -1482,8 +1510,9 @@ function renderMeals(){
 document.getElementById('mealDatePicker').addEventListener('change', function(){
   const val = this.value;
   if (!val) return;
-  const d = new Date(val + 'T00:00:00');
-  if (isNaN(d.getTime())) return;
+  const [y, m, d] = val.split('-').map(Number);
+  const dateObj = new Date(y, m - 1, d);
+  if (isNaN(dateObj.getTime())) return;
   if (!state.meals) state.meals = { checked: {} };
   state.meals.date = val;
   saveState();
@@ -1493,7 +1522,7 @@ document.getElementById('mealDatePicker').addEventListener('change', function(){
 document.getElementById('mealTodayBtn').addEventListener('click', ()=>{
   const today = new Date();
   const monday = getMonday(today);
-  const dateStr = monday.toISOString().split('T')[0];
+  const dateStr = formatDateLocal(monday);
   if (!state.meals) state.meals = { checked: {} };
   state.meals.date = dateStr;
   saveState();
