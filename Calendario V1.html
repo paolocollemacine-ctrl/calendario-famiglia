@@ -129,11 +129,10 @@
   .meal-week h3{font-family:'Fraunces',serif;font-weight:500;font-size:17px;margin:0 0 12px;color:var(--gold);letter-spacing:.02em;}
   .meal-table{width:100%;border-collapse:collapse;font-size:13px;min-width:540px;}
   .meal-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);padding:6px 8px 10px 0;border-bottom:1px solid var(--border);font-weight:600;}
-  .meal-table td{padding:8px 8px 8px 0;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.4;}
-  .meal-table .day-name{color:var(--text-dim);font-weight:600;white-space:nowrap;padding-right:16px;}
-  .meal-table .meal-label{font-weight:500;color:var(--text);font-size:11px;letter-spacing:.03em;text-transform:uppercase;color:var(--text-faint);min-width:50px;}
-  .meal-table .meal-content{color:var(--text);}
-  .meal-table .school{font-size:12px;color:var(--text-dim);display:block;margin-top:2px;border-top:1px dashed var(--border);padding-top:4px;}
+  .meal-table td{padding:12px 8px 12px 0;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+  .meal-table .day-name{color:var(--text-dim);font-weight:600;white-space:nowrap;padding-right:16px;width:100px;}
+  .meal-content div{margin-bottom:2px;}
+  .meal-content strong{color:var(--text-dim);font-weight:600;}
   .shopping-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-top:10px;}
   .shop-cat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;}
   .shop-cat h4{font-family:'Fraunces',serif;font-weight:500;font-size:14px;margin:0 0 6px;color:var(--text);letter-spacing:.01em;}
@@ -145,7 +144,6 @@
   .meal-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
   .meal-controls input[type="date"]{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:var(--radius-sm);padding:8px 10px;font-family:'Inter',sans-serif;font-size:13px;outline:none;}
   .meal-controls input[type="date"]:focus{border-color:var(--gold-dim);}
-  .meal-week-label{font-weight:600;padding:6px 12px;background:var(--surface-2);border-radius:var(--radius-sm);font-size:14px;}
 
   /* Bottom actions bar */
   .bottom-actions {
@@ -269,7 +267,6 @@
       min-height:34px;
     }
     
-    /* Nascondi vista agenda su mobile - usiamo la griglia ottimizzata */
     .agenda-view{
       display:none !important;
     }
@@ -285,7 +282,6 @@
       font-size:14px;
     }
     
-    /* Navigazione settimana */
     .week-nav{
       display:flex !important;
       gap:4px;
@@ -311,7 +307,6 @@
       flex:1;
     }
     
-    /* Zoom controls */
     .zoom-controls{
       display:flex !important;
       gap:6px;
@@ -333,7 +328,6 @@
     }
   }
   
-  /* Desktop: nascondi navigazione settimana e zoom */
   @media (min-width:768px){
     .week-nav{display:none !important;}
     .zoom-controls{display:none !important;}
@@ -361,14 +355,12 @@
       </div>
     </div>
     
-    <!-- Navigazione settimana (solo mobile) -->
     <div class="week-nav" id="weekNav">
       <button class="btn btn-ghost" data-scroll="-1">◀</button>
       <span class="week-label" id="weekRange">Lun - Dom</span>
       <button class="btn btn-ghost" data-scroll="1">▶</button>
     </div>
     
-    <!-- Zoom controls (solo mobile) -->
     <div class="zoom-controls" id="zoomControls">
       <button class="btn btn-ghost" id="zoomOut">🔍−</button>
       <span class="zoom-level" id="zoomLevel">100%</span>
@@ -388,7 +380,6 @@
       <span>Trascina per spostare · clicca per modificare</span>
     </div>
 
-    <!-- Bottom actions bar -->
     <div class="bottom-actions">
       <button class="btn" id="btnTheme" title="Tema">🌓 Tema</button>
       <button class="btn" id="btnView" title="Vista">📋 Vista</button>
@@ -425,11 +416,10 @@
     </div>
     <div class="meal-controls">
       <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim);">
-        Settimana che inizia il:
+        Seleziona Data:
         <input type="date" id="mealDatePicker">
       </label>
       <button class="btn" id="mealTodayBtn">📅 Oggi</button>
-      <span class="meal-week-label" id="mealWeekLabel">Settimana 1</span>
     </div>
     <div class="meal-grid" id="mealGrid"></div>
     <div style="margin-top:24px;border-top:1px solid var(--border);padding-top:18px;">
@@ -702,7 +692,7 @@ function defaultData(){
     filter:'tutti',
     settings:{theme:'dark',view:'grid'},
     projectsSorted:true,
-    meals:{ week:0, date:null, checked:{} }
+    meals:{ date:null, checked:{} }
   };
 }
 
@@ -713,7 +703,7 @@ function normalizeState(p){
   if(!p.projects)p.projects=defaultData().projects;
   if(!p.settings)p.settings={theme:'dark',view:'grid'};
   if(!p.projectsSorted){p.projects=sortProjectsByStatus(p.projects);p.projectsSorted=true;}
-  if(!p.meals)p.meals={week:0,date:null,checked:{}};
+  if(!p.meals)p.meals={date:null,checked:{}};
   return p;
 }
 function loadState(){
@@ -1145,7 +1135,7 @@ fileImport.addEventListener('change',e=>{
       if(!parsed.routineTimes) parsed.routineTimes=defaultData().routineTimes;
       if(!parsed.filter) parsed.filter='tutti';
       if(!parsed.settings) parsed.settings={theme:'dark',view:'grid'};
-      if(!parsed.meals) parsed.meals={week:0,date:null,checked:{}};
+      if(!parsed.meals) parsed.meals={date:null,checked:{}};
       state=parsed;
       saveState();
       applyTheme();
@@ -1370,185 +1360,205 @@ document.addEventListener('keydown',e=>{
   if(projectOverlay.classList.contains('open')) closeProjectModal();
 });
 
-/* ---------- Pasti e spesa ---------- */
-const MEAL_DATA = [
-  // Settimana 2 (es. dal 14/09/2026 al 18/09/2026)
+/* ---------- Pasti e spesa con rotazione a 4 settimane ---------- */
+const MEAL_WEEKS = [
+  // SETTIMANA 1
   {
     days:[
-      {day:'Lunedì', lunch:{primo:"Pasta al pomodoro e olive", secondo:"Arrosto di tacchino freddo", contorno:"Carote julienne", extra:"Frutta fresca di stagione"}, dinner:'Pesce + Zucchine + Frutta fresca di stagione'},
-      {day:'Martedì', lunch:{primo:"Riso all'olio extravergine", secondo:"Tonno", contorno:"Fagiolini e pomodori", extra:"Frutta fresca di stagione"}, dinner:'Uova + Spinaci + Frutta fresca di stagione'},
-      {day:'Mercoledì', lunch:{primo:"Pasta al pomodoro", secondo:"Frittata alle verdure", contorno:"Piselli* al forno", extra:"Dessert"}, dinner:'Legumi + Carote + Frutta fresca di stagione'},
-      {day:'Giovedì', lunch:{primo:"Pasta all'olio extravergine", secondo:"Pollo al forno", contorno:"Insalata mista", extra:"Frutta fresca di stagione"}, dinner:'Formaggio magro + Finocchi + Frutta fresca di stagione'},
-      {day:'Venerdì', lunch:{primo:"Pasta al pesto rosso", secondo:"Formaggio fresco", contorno:"Zucchine al forno", extra:"Frutta fresca di stagione"}, dinner:'Carne rossa + Insalata mista + Frutta fresca di stagione'},
+      {day:'Lunedì', lunch:{primo:"Trancio di pizza Margherita", secondo:"1/2 porzione affettato", contorno:"Insalata pomodori", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Pesce", contorno:"Zucchine", extra:"Frutta fresca"}},
+      {day:'Martedì', lunch:{primo:"Pasta al pesto", secondo:"Girotondi di verdure", contorno:"Carote julienne", extra:"Dessert"}, dinner:{primo:"—", secondo:"Uova", contorno:"Spinaci", extra:"Frutta fresca"}},
+      {day:'Mercoledì', lunch:{primo:"Riso ai *piselli", secondo:"Formaggio fresco", contorno:"Zucchine al forno", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Legumi", contorno:"Carote", extra:"Frutta fresca"}},
+      {day:'Giovedì', lunch:{primo:"Pasta al pomodoro", secondo:"Milanese di pollo al forno", contorno:"Insalata mista", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Formaggio magro", contorno:"Finocchi", extra:"Frutta fresca"}},
+      {day:'Venerdì', lunch:{primo:"Pasta olio e parmigiano", secondo:"Burger di *pesce", contorno:"Fagiolini al vapore", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Carne rossa", contorno:"Insalata mista", extra:"Frutta fresca"}}
     ],
-    shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Pesce (1 porz.)','Uova (1 porz.)','Legumi (1 porz.)','Formaggio magro (1 porz.)','Carne rossa (1 porz.)'], 'Verdura':['Zucchine','Spinaci','Carote','Finocchi','Insalata mista'], 'Frutta':['Frutta fresca di stagione (per 5 giorni pranzo e cena)'] }
+    shopping:{
+      'Primi & Cereali':['Pasta','Riso','Pizza'],
+      'Proteine':['Prosciutto cotto','Girotondi verdure','Formaggio fresco','Pollo','Burger di pesce','Pesce','Uova','Legumi','Formaggio magro','Carne rossa'],
+      'Verdura':['Insalata pomodori','Carote','Piselli','Zucchine','Insalata mista','Fagiolini','Spinaci','Finocchi'],
+      'Frutta & Dessert':['Frutta fresca di stagione','Dessert']
+    }
   },
-  // Settimana 3 (es. dal 21/09/2026 al 25/09/2026)
+  // SETTIMANA 2
   {
     days:[
-      {day:'Lunedì', lunch:{primo:"Trancio di pizza Margherita", secondo:"1/2 porzione di affettato di prosciutto cotto", contorno:"Insalata di pomodori", extra:"Frutta fresca di stagione"}, dinner:'Pesce + Broccoli + Frutta fresca di stagione'},
-      {day:'Martedì', lunch:{primo:"Pasta alla crema di pesto", secondo:"Girotondi di verdure", contorno:"Carote julienne", extra:"Dessert"}, dinner:'Legumi + Carote + Frutta fresca di stagione'},
-      {day:'Mercoledì', lunch:{primo:"Riso ai *piselli", secondo:"Formaggio fresco", contorno:"Zucchine al forno", extra:"Frutta fresca di stagione"}, dinner:'Carne bianca + Melanzane + Frutta fresca di stagione'},
-      {day:'Giovedì', lunch:{primo:"Pasta al pomodoro", secondo:"Milanese di pollo al forno", contorno:"Insalata mista", extra:"Frutta fresca di stagione"}, dinner:'Uova + Bietole + Frutta fresca di stagione'},
-      {day:'Venerdì', lunch:{primo:"Pasta all'olio extravergine", secondo:"Burger di *pesce al forno", contorno:"Fagiolini al forno", extra:"Frutta fresca di stagione"}, dinner:'Formaggio magro + Zucchine + Frutta fresca di stagione'},
+      {day:'Lunedì', lunch:{primo:"Pasta al pomodoro e olive", secondo:"Arrosto di tacchino", contorno:"Carote julienne", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Uova", contorno:"Fagiolini", extra:"Frutta fresca"}},
+      {day:'Martedì', lunch:{primo:"Riso all'olio extravergine", secondo:"Tonno", contorno:"Fagiolini e pomodori", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Pesce", contorno:"Finocchi", extra:"Frutta fresca"}},
+      {day:'Mercoledì', lunch:{primo:"Pasta al pomodoro", secondo:"Frittata alle verdure", contorno:"Piselli* al forno", extra:"Dessert"}, dinner:{primo:"—", secondo:"Carne bianca", contorno:"Zucchine", extra:"Frutta fresca"}},
+      {day:'Giovedì', lunch:{primo:"Pasta all'olio extravergine", secondo:"Pollo al forno", contorno:"Insalata mista", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Formaggio fresco", contorno:"Carote", extra:"Frutta fresca"}},
+      {day:'Venerdì', lunch:{primo:"Pasta al pesto rosso", secondo:"Formaggio fresco", contorno:"Zucchine al forno", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Legumi", contorno:"Insalata mista", extra:"Frutta fresca"}}
     ],
-    shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Pesce (1 porz.)','Legumi (1 porz.)','Carne bianca (1 porz.)','Uova (1 porz.)','Formaggio magro (1 porz.)'], 'Verdura':['Broccoli','Carote','Melanzane','Bietole','Zucchine'], 'Frutta':['Frutta fresca di stagione'] }
+    shopping:{
+      'Primi & Cereali':['Pasta','Riso'],
+      'Proteine':['Arrosto tacchino','Tonno','Frittata','Pollo','Formaggio fresco','Uova','Pesce','Carne bianca','Legumi'],
+      'Verdura':['Carote','Fagiolini','Pomodori','Piselli','Insalata mista','Zucchine','Finocchi'],
+      'Frutta & Dessert':['Frutta fresca di stagione','Dessert']
+    }
   },
-  // Settimana 4 (es. dal 28/09/2026 al 04/10/2026)
+  // SETTIMANA 3
   {
     days:[
-      {day:'Lunedì', lunch:{primo:"Pasta al pesto rosso", secondo:"Pollo al forno", contorno:"Insalata mista", extra:"Dessert"}, dinner:'Pesce + Finocchi + Frutta fresca di stagione'},
-      {day:'Martedì', lunch:{primo:"Pasta all'olio extravergine", secondo:"Polpette di legumi", contorno:"Zucchine al forno", extra:"Frutta fresca di stagione"}, dinner:'Uova + Carote + Frutta fresca di stagione'},
-      {day:'Mercoledì', lunch:{primo:"Pasta al ragù di verdure", secondo:"Filetto di pesce* impanato al forno", contorno:"Carote julienne", extra:"Frutta fresca di stagione"}, dinner:'Formaggio magro + Spinaci + Frutta fresca di stagione'},
-      {day:'Giovedì', lunch:{primo:"Risotto alle zucchine", secondo:"Polpette di bovino al forno", contorno:"Insalata di pomodori", extra:"Frutta fresca di stagione"}, dinner:'Legumi + Zucchine + Frutta fresca di stagione'},
-      {day:'Venerdì', lunch:{primo:"Pasta al pomodoro e olive", secondo:"Formaggio fresco", contorno:"Insalata di fagiolini*", extra:"Frutta fresca di stagione"}, dinner:'Carne bianca + Cavolfiore + Frutta fresca di stagione'},
+      {day:'Lunedì', lunch:{primo:"Gnocchi al pomodoro", secondo:"Robiola", contorno:"Insalata verde", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Carne rossa", contorno:"Zucchine", extra:"Frutta fresca"}},
+      {day:'Martedì', lunch:{primo:"Riso alle zucchine", secondo:"Tacchino ai ferri", contorno:"Spinaci ripassati", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Pesce", contorno:"Carote", extra:"Frutta fresca"}},
+      {day:'Mercoledì', lunch:{primo:"Pasta al ragù vegetale", secondo:"Mozzarella", contorno:"Pomodori", extra:"Dessert"}, dinner:{primo:"—", secondo:"Uova", contorno:"Fagiolini", extra:"Frutta fresca"}},
+      {day:'Giovedì', lunch:{primo:"Minestrone con pasta", secondo:"Bastoncini di *pesce", contorno:"Carote al vapore", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Legumi", contorno:"Finocchi", extra:"Frutta fresca"}},
+      {day:'Venerdì', lunch:{primo:"Pasta lenticchie e pomodoro", secondo:"Ricotta", contorno:"Finocchi al vapore", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Pollo", contorno:"Insalata mista", extra:"Frutta fresca"}}
     ],
-    shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Pesce (1 porz.)','Uova (1 porz.)','Formaggio magro (1 porz.)','Legumi (1 porz.)','Carne bianca (1 porz.)'], 'Verdura':['Finocchi','Carote','Spinaci','Zucchine','Cavolfiore'], 'Frutta':['Frutta fresca di stagione'] }
+    shopping:{
+      'Primi & Cereali':['Gnocchi','Riso','Pasta','Minestrone'],
+      'Proteine':['Robiola','Tacchino','Mozzarella','Bastoncini di pesce','Ricotta','Carne rossa','Pesce','Uova','Legumi','Pollo'],
+      'Verdura':['Insalata verde','Zucchine','Spinaci','Pomodori','Carote','Fagiolini','Finocchi','Insalata mista'],
+      'Frutta & Dessert':['Frutta fresca di stagione','Dessert']
+    }
   },
-  // Settimana 1 (es. dal 07/09/2026 al 11/09/2026)
+  // SETTIMANA 4
   {
     days:[
-      {day:'Lunedì', lunch:{primo:"Pasta all'olio extravergine", secondo:"Formaggio fresco", contorno:"Insalata verde", extra:"Frutta fresca di stagione"}, dinner:'Pesce + Insalata verde + Frutta fresca di stagione'},
-      {day:'Martedì', lunch:{primo:"Trancio di pizza Margherita", secondo:"1/2 porzione di affettato di prosciutto cotto", contorno:"Carote julienne", extra:"Frutta fresca di stagione"}, dinner:'Legumi + Zucchine + Frutta fresca di stagione'},
-      {day:'Mercoledì', lunch:{primo:"Riso al pomodoro", secondo:"Hamburger di bovino", contorno:"Insalata di pomodori", extra:"Frutta fresca di stagione"}, dinner:'Uova + Pomodori + Frutta fresca di stagione'},
-      {day:'Giovedì', lunch:{primo:"Cous Cous alle verdure", secondo:"Girotondi di verdure", contorno:"Fagiolini* al forno", extra:"Frutta fresca di stagione"}, dinner:'Carne bianca + Fagiolini + Frutta fresca di stagione'},
-      {day:'Venerdì', lunch:{primo:"Pasta al pesto", secondo:"Filetto di pesce* impanato al forno", contorno:"Zucchine al forno", extra:"Frutta fresca di stagione"}, dinner:'Formaggio magro + Carote + Frutta fresca di stagione'},
+      {day:'Lunedì', lunch:{primo:"Risotto allo zafferano", secondo:"Uova sode", contorno:"Fagiolini all'olio", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Pesce", contorno:"Insalata mista", extra:"Frutta fresca"}},
+      {day:'Martedì', lunch:{primo:"Pasta al pomodoro", secondo:"Polpette di carne al forno", contorno:"Zucchine trifolate", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Formaggio magro", contorno:"Spinaci", extra:"Frutta fresca"}},
+      {day:'Mercoledì', lunch:{primo:"Pasta alle verdure", secondo:"Crescenza", contorno:"Carote julienne", extra:"Dessert"}, dinner:{primo:"—", secondo:"Carne bianca", contorno:"Pomodori", extra:"Frutta fresca"}},
+      {day:'Giovedì', lunch:{primo:"Crema di piselli con crostini", secondo:"Pollo a dadini", contorno:"Insalata mista", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Uova", contorno:"Zucchine", extra:"Frutta fresca"}},
+      {day:'Venerdì', lunch:{primo:"Pasta al tonno", secondo:"Formaggio al vapore", contorno:"Spinaci all'olio", extra:"Frutta fresca"}, dinner:{primo:"—", secondo:"Legumi", contorno:"Finocchi", extra:"Frutta fresca"}}
     ],
-    shopping:{ 'Primi & Cereali':['Pasta','Riso'], 'Proteine':['Pesce (1 porz.)','Legumi (1 porz.)','Uova (1 porz.)','Carne bianca (1 porz.)','Formaggio magro (1 porz.)'], 'Verdura':['Insalata verde','Zucchine','Pomodori','Fagiolini','Carote'], 'Frutta':['Frutta fresca di stagione'] }
+    shopping:{
+      'Primi & Cereali':['Riso','Pasta','Crostini'],
+      'Proteine':['Uova sode','Polpette di carne','Crescenza','Pollo','Tonno','Formaggio','Pesce','Formaggio magro','Carne bianca','Uova','Legumi'],
+      'Verdura':['Fagiolini','Zucchine','Spinaci','Carote','Piselli','Insalata mista','Pomodori','Finocchi'],
+      'Frutta & Dessert':['Frutta fresca di stagione','Dessert']
+    }
   }
 ];
 
-function getMonday(date) {
-  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  const monday = new Date(d.getFullYear(), d.getMonth(), diff);
-  monday.setHours(0,0,0,0);
-  return monday;
+const mealDatePicker = document.getElementById('mealDatePicker');
+const mealTodayBtn = document.getElementById('mealTodayBtn');
+const mealGrid = document.getElementById('mealGrid');
+const shoppingGrid = document.getElementById('shoppingGrid');
+
+function getMonday(d) {
+  d = new Date(d);
+  var day = d.getDay(),
+      diff = d.getDate() - day + (day == 0 ? -6 : 1);
+  return new Date(d.setDate(diff));
 }
 
-function getWeekIndexFromDate(date) {
-  const monday = getMonday(date);
-  // Ancoraggio: Lunedì 07/09/2026 = Settimana 1 dell'anno scolastico
-  // Mese 8 = Settembre (0-indexed in Javascript)
-  const refMonday = new Date(2026, 8, 7);
-  refMonday.setHours(0,0,0,0);
-  
-  const diffTime = monday.getTime() - refMonday.getTime();
-  const diffDays = Math.round(diffTime / (24 * 60 * 60 * 1000));
-  const diffWeeks = Math.floor(diffDays / 7);
-  
-  // Calcolo ciclico a 4 settimane (con offset 3 per allineare le schede)
-  return (((diffWeeks + 3) % 4) + 4) % 4;
+function getWeekIndex(date) {
+  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+  const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+  const weekNum = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+  return (weekNum - 1) % 4; // Indice da 0 a 3 per le 4 settimane a rotazione
 }
 
-function formatDateLocal(d) {
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
+function renderMeals() {
+  let currentDate = state.meals && state.meals.date ? new Date(state.meals.date) : new Date();
+  if (isNaN(currentDate.getTime())) currentDate = new Date();
+  
+  const formattedDate = currentDate.toISOString().slice(0, 10);
+  mealDatePicker.value = formattedDate;
 
-function renderMeals(){
-  const datePicker = document.getElementById('mealDatePicker');
-  let selectedDate;
-  if (state.meals && state.meals.date) {
-    const [y, m, d] = state.meals.date.split('-').map(Number);
-    selectedDate = new Date(y, m - 1, d);
-  } else {
-    selectedDate = new Date();
-  }
-  if (isNaN(selectedDate.getTime())) selectedDate = new Date();
-  
-  const monday = getMonday(selectedDate);
-  const dateStr = formatDateLocal(monday);
-  datePicker.value = dateStr;
-  
-  const weekIndex = getWeekIndexFromDate(monday);
-  const data = MEAL_DATA[weekIndex];
-  
-  // Mappatura numero settimana visualizzato (1, 2, 3, 4) in base all'indice
-  const weekDisplayNum = ((weekIndex + 1) % 4) === 0 ? 1 : weekIndex + 1;
-  document.getElementById('mealWeekLabel').textContent = `Settimana ${weekDisplayNum}`;
+  const monday = getMonday(currentDate);
+  const weekIdx = getWeekIndex(currentDate);
+  const weekData = MEAL_WEEKS[weekIdx];
 
-  let html = `<div class="meal-week"><h3>Pasti settimana ${weekDisplayNum} (dal ${monday.toLocaleDateString('it-IT')})</h3><table class="meal-table"><thead><tr><th>Giorno</th><th>Primo</th><th>Secondo</th><th>Contorno</th><th>Dessert / Frutta</th><th>Cena</th></tr></thead><tbody>`;
-  data.days.forEach(d=>{
-    html+=`<tr><td class="day-name">${d.day}</td><td>${d.lunch.primo}</td><td>${d.lunch.secondo}</td><td>${d.lunch.contorno}</td><td>${d.lunch.extra}</td><td><span class="meal-content">${d.dinner}</span></td></tr>`;
+  // Render Tabella con il layout verticale senza indicare il numero della settimana
+  let html = `<div class="meal-week">
+    <h3>Menu della Settimana (dal ${monday.toLocaleDateString('it-IT')})</h3>
+    <table class="meal-table">
+      <thead>
+        <tr>
+          <th>Giorno</th>
+          <th>Pranzo (Scuola)</th>
+          <th>Cena</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+  weekData.days.forEach(d => {
+    html += `<tr>
+      <td class="day-name">${d.day}</td>
+      <td>
+        <div class="meal-content">
+          <div><strong>Primo:</strong> ${d.lunch.primo}</div>
+          <div><strong>Secondo:</strong> ${d.lunch.secondo}</div>
+          <div><strong>Contorno:</strong> ${d.lunch.contorno}</div>
+          <div><strong>Extra:</strong> ${d.lunch.extra}</div>
+        </div>
+      </td>
+      <td>
+        <div class="meal-content">
+          ${d.dinner.primo !== '—' ? `<div><strong>Primo:</strong> ${d.dinner.primo}</div>` : ''}
+          <div><strong>Secondo:</strong> ${d.dinner.secondo}</div>
+          <div><strong>Contorno:</strong> ${d.dinner.contorno}</div>
+          <div><strong>Extra:</strong> ${d.dinner.extra}</div>
+        </div>
+      </td>
+    </tr>`;
   });
-  html+=`</tbody></table></div>`;
-  document.getElementById('mealGrid').innerHTML = html;
 
-  const shop = data.shopping;
-  const key = `week-${weekIndex}`;
-  if (!state.meals.checked) state.meals.checked = {};
-  if (!state.meals.checked[key]) state.meals.checked[key] = {};
+  html += `</tbody></table></div>`;
+  mealGrid.innerHTML = html;
 
+  // Render Lista della Spesa basata sulla settimana selezionata
   let shopHtml = '';
-  Object.keys(shop).forEach(cat=>{
-    shopHtml+=`<div class="shop-cat"><h4>${cat}</h4><ul>`;
-    shop[cat].forEach(item=>{
-      const done = state.meals.checked[key][item] ? 'checked' : '';
-      shopHtml+=`<li><input type="checkbox" data-week="${key}" data-item="${item}" ${done}> <span class="${done?'done':''}">${item}</span></li>`;
-    });
-    shopHtml+=`</ul></div>`;
-  });
-  document.getElementById('shoppingGrid').innerHTML = shopHtml;
+  const checkedObj = (state.meals && state.meals.checked) || {};
 
-  document.querySelectorAll('#shoppingGrid input[type="checkbox"]').forEach(cb=>{
-    cb.addEventListener('change', function(){
-      const weekKey = this.dataset.week;
-      const item = this.dataset.item;
-      if (!state.meals.checked[weekKey]) state.meals.checked[weekKey] = {};
-      state.meals.checked[weekKey][item] = this.checked;
-      saveState();
-      const span = this.nextElementSibling;
-      if(span) span.classList.toggle('done', this.checked);
+  Object.keys(weekData.shopping).forEach(cat => {
+    shopHtml += `<div class="shop-cat">
+      <h4>${cat}</h4>
+      <ul>`;
+    weekData.shopping[cat].forEach(item => {
+      const isChecked = !!checkedObj[item];
+      shopHtml += `<li>
+        <input type="checkbox" data-item="${item}" ${isChecked ? 'checked' : ''}>
+        <span class="${isChecked ? 'done' : ''}">${item}</span>
+      </li>`;
     });
+    shopHtml += `</ul></div>`;
   });
+
+  shoppingGrid.innerHTML = shopHtml;
 }
 
-document.getElementById('mealDatePicker').addEventListener('change', function(){
-  const val = this.value;
-  if (!val) return;
-  const [y, m, d] = val.split('-').map(Number);
-  const dateObj = new Date(y, m - 1, d);
-  if (isNaN(dateObj.getTime())) return;
-  if (!state.meals) state.meals = { checked: {} };
-  state.meals.date = val;
+mealDatePicker.addEventListener('change', (e) => {
+  if (e.target.value) {
+    if(!state.meals) state.meals = {};
+    state.meals.date = e.target.value;
+    saveState();
+    renderMeals();
+  }
+});
+
+mealTodayBtn.addEventListener('click', () => {
+  if(!state.meals) state.meals = {};
+  state.meals.date = new Date().toISOString().slice(0, 10);
   saveState();
   renderMeals();
 });
 
-document.getElementById('mealTodayBtn').addEventListener('click', ()=>{
-  const today = new Date();
-  const monday = getMonday(today);
-  const dateStr = formatDateLocal(monday);
-  if (!state.meals) state.meals = { checked: {} };
-  state.meals.date = dateStr;
-  saveState();
-  renderMeals();
+shoppingGrid.addEventListener('change', (e) => {
+  if (e.target.matches('input[type="checkbox"]')) {
+    const item = e.target.dataset.item;
+    if (!state.meals) state.meals = {};
+    if (!state.meals.checked) state.meals.checked = {};
+    state.meals.checked[item] = e.target.checked;
+    saveState();
+    const span = e.target.nextElementSibling;
+    if (span) span.classList.toggle('done', e.target.checked);
+  }
 });
 
-document.getElementById('btnResetMeals').addEventListener('click', ()=>{
-  if(!confirm('Resettare tutti gli ingredienti già spuntati nella lista della spesa?')) return;
-  state.meals.checked = {};
+document.getElementById('btnResetMeals').addEventListener('click', () => {
+  if (!confirm('Resettare tutte le spunte della lista della spesa?')) return;
+  if (state.meals) state.meals.checked = {};
   saveState();
   renderMeals();
-  toast('Lista della spesa resettata','success');
+  toast('Lista della spesa resettata', 'success');
 });
 
-/* ---------- Init ---------- */
+/* ---------- Inizializzazione ---------- */
 applyTheme();
 render();
 renderProjects();
 renderMeals();
 initFirebaseSync();
-window.addEventListener('beforeunload', ()=>{
-  if(cloudSaveTimeout && cloudReady && setDocFn && cloudDocRef){
-    clearTimeout(cloudSaveTimeout);
-    setDocFn(cloudDocRef, {data: JSON.stringify(state), updatedAt: getLocalTs()}).catch(()=>{});
-  }
-});
 </script>
 </body>
 </html>
