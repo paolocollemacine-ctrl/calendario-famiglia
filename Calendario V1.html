@@ -386,6 +386,7 @@ function dishIcon(name){
   if(/riso|risotto/.test(n)) return '🍚';
   if(/pizza/.test(n)) return '🍕';
   if(/passato|crema|minestrone|zuppa|vellutata/.test(n)) return '🥣';
+  if(/piselli/.test(n)) return '🫘';
   if(/pollo/.test(n)) return '🍗';
   if(/pesce|tonno|salmone/.test(n)) return '🐟';
   if(/carne|bovino|maiale|lonza|cotoletta|hamburger|polpette/.test(n)) return '🥩';
@@ -400,7 +401,8 @@ function dishIcon(name){
   if(/fagiolini/.test(n)) return '🫛';
   if(/insalata/.test(n)) return '🥗';
   if(/zucca/.test(n)) return '🎃';
-  if(/broccoli/.test(n)) return '🥦';
+  if(/broccoli|cavolfiore/.test(n)) return '🥦';
+  if(/zucchine/.test(n)) return '🥒';
   if(/frutta|mela|banana|arancia/.test(n)) return '🍎';
   if(/dessert|dolce|torta/.test(n)) return '🍰';
   return '🍽️';
@@ -408,6 +410,7 @@ function dishIcon(name){
 
 function nutriBadge(dish){
   const n = (dish||'').toLowerCase();
+  if(/piselli/.test(n)) return {label:'Leggera', cls:'nutri-leggera'};
   if(/pollo|pesce|carne|bovino|maiale|cotoletta|hamburger|polpette|filetto/.test(n)) return {label:'Proteica', cls:'nutri-proteica'};
   if(/frittata|uova|formaggio|ricotta|mozzarella/.test(n)) return {label:'Veloce', cls:'nutri-veloce'};
   if(/legumi|piselli|fagioli|lenticchie|ceci/.test(n)) return {label:'Leggera', cls:'nutri-leggera'};
@@ -418,13 +421,14 @@ function nutriBadge(dish){
 function categorizeDish(name){
   if(!name || name === '—') return null;
   const n = name.toLowerCase();
+  if(/piselli/.test(n)) return 'legumi';
   if(/pollo|carne|bovino|maiale|lonza|cotoletta|hamburger|polpette|prosciutto/.test(n)) return 'carne';
   if(/pesce|tonno|salmone|filetto di pesce|burger di pesce/.test(n)) return 'pesce';
   if(/legumi|piselli|fagioli|lenticchie|ceci|crocchette di legumi/.test(n)) return 'legumi';
   if(/frittata|uova/.test(n)) return 'uova';
   if(/formaggio|mozzarella|ricotta|robiola|crescenza|parmigiano/.test(n)) return 'latticini';
   if(/pasta|riso|risotto|pizza|farro|orzo|gnocchi/.test(n)) return 'carboidrati';
-  if(/carote|spinaci|patate|finocchi|fagiolini|insalata|zucca|broccoli|biete|erbette|zucchine|pomodori/.test(n)) return 'verdure';
+  if(/carote|spinaci|patate|finocchi|fagiolini|insalata|zucca|broccoli|cavolfiore|biete|erbette|zucchine|pomodori/.test(n)) return 'verdure';
   return null;
 }
 
@@ -468,13 +472,17 @@ const RICETTE = {
   'insalata mista': "Ingredienti: 150g insalata mista, olio EVO, aceto, sale.\nProcedimento: condisci a crudo.",
   'insalata verde': "Ingredienti: 150g insalata verde, olio EVO, limone, sale.\nProcedimento: condisci a crudo.",
   'biete erbette al vapore': "Ingredienti: 250g biete, olio EVO, limone.\nProcedimento: cuoci a vapore 6 min, condisci.",
+  'zucchine trifolate': "Ingredienti: 250g zucchine, olio EVO, 1 spicchio d'aglio, prezzemolo, sale.\nProcedimento: taglia le zucchine a rondelle, saltale in padella con olio e aglio per 8-10 min, completa con prezzemolo.",
+  'broccoli al vapore': "Ingredienti: 250g broccoli, olio EVO, limone, sale.\nProcedimento: dividi in cimette, cuoci a vapore 8 min, condisci con olio e limone.",
+  'zucca al forno': "Ingredienti: 250g zucca, olio EVO, rosmarino, sale.\nProcedimento: taglia a spicchi, condisci e inforna a 200° per 25 min.",
+  'cavolfiore al forno': "Ingredienti: 250g cavolfiore, olio EVO, pangrattato, sale.\nProcedimento: dividi in cimette, condisci con olio e pangrattato, inforna a 200° per 25 min.",
   'frutta fresca di stagione': "Frutta fresca di stagione (es. mela, pera, arancia, kiwi).",
   'dessert': "Dessert (porzione piccola)."
 };
 
 function ricettaFor(name){
   if(!name) return null;
-  const n = name.toLowerCase();
+  const n = name.toLowerCase().replace(/\*/g,'');
   let bestKey = null, bestLen = 0;
   Object.keys(RICETTE).forEach(k => {
     if(n.includes(k) && k.length > bestLen){bestKey = k; bestLen = k.length;}
@@ -489,18 +497,18 @@ const MEAL_WEEKS = [
   {
     days:[
       {day:'Lunedì', lunch:{primo:"Pasta al pomodoro e olive", secondo:"Pollo al forno", contorno:"Carote julienne", extra:"Frutta fresca di stagione"},
-       dinner:{primo:"—", secondo:"Formaggio fresco", contorno:"Spinaci* al vapore", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Formaggio fresco", contorno:"Zucchine trifolate", extra:"Frutta fresca di stagione"}},
       {day:'Martedì', lunch:{primo:"Pasta all'olio extravergine", secondo:"Formaggio fresco", contorno:"Spinaci* al forno", extra:"Frutta fresca di stagione"},
-       dinner:{primo:"—", secondo:"Filetto di *pesce al forno", contorno:"Patate al forno", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Filetto di *pesce al forno", contorno:"Broccoli al vapore", extra:"Frutta fresca di stagione"}},
       {day:'Mercoledì', lunch:{primo:"Crema di verdure e legumi", secondo:"Lonza di maiale al forno", contorno:"Patate al forno", extra:"Frutta fresca di stagione"},
-       dinner:{primo:"—", secondo:"Frittata alle verdure", contorno:"Finocchi al forno", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Frittata alle verdure", contorno:"Zucca al forno", extra:"Frutta fresca di stagione"}},
       {day:'Giovedì', lunch:{primo:"Pasta alla crema di pesto", secondo:"Frittata alle verdure", contorno:"Finocchi al forno", extra:"Dessert"},
-       dinner:{primo:"—", secondo:"Pollo al forno", contorno:"Fagiolini* al forno", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Pollo al forno", contorno:"Cavolfiore al forno", extra:"Frutta fresca di stagione"}},
       {day:'Venerdì', lunch:{primo:"Riso al pomodoro", secondo:"Filetto di *pesce al forno", contorno:"Fagiolini* al forno", extra:"Frutta fresca di stagione"},
        dinner:{primo:"—", secondo:"Polpette di bovino al forno", contorno:"Insalata mista", extra:"Frutta fresca di stagione"}}
     ],
     shopping:{
-      'Ortofrutta':[['Carote','€'],['Spinaci','€'],['Patate','€'],['Finocchi','€'],['Fagiolini','€'],['Insalata mista','€'],['Frutta fresca di stagione','€€']],
+      'Ortofrutta':[['Carote','€'],['Spinaci','€'],['Patate','€'],['Finocchi','€'],['Fagiolini','€'],['Insalata mista','€'],['Zucchine','€'],['Broccoli','€'],['Zucca','€€'],['Cavolfiore','€'],['Frutta fresca di stagione','€€']],
       'Macelleria':[['Pollo','€€'],['Lonza di maiale','€€€'],['Polpette di bovino','€€']],
       'Pescheria':[['Filetto di pesce','€€€']],
       'Latticini':[['Formaggio fresco','€€'],['Uova (frittata)','€'],['Parmigiano','€€']],
@@ -512,22 +520,22 @@ const MEAL_WEEKS = [
   {
     days:[
       {day:'Lunedì', lunch:{primo:"Pasta all'olio extravergine", secondo:"Formaggio fresco", contorno:"Spinaci* al vapore", extra:"Frutta fresca di stagione"},
-       dinner:{primo:"—", secondo:"Pollo al forno", contorno:"Patate al forno", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Pollo al forno", contorno:"Zucchine trifolate", extra:"Frutta fresca di stagione"}},
       {day:'Martedì', lunch:{primo:"Trancio di pizza Margherita", secondo:"1/2 porzione di affettato di prosciutto cotto", contorno:"Insalata mista", extra:"Frutta fresca di stagione"},
-       dinner:{primo:"—", secondo:"Filetto di *pesce al forno", contorno:"Finocchi al forno", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Filetto di *pesce al forno", contorno:"Broccoli al vapore", extra:"Frutta fresca di stagione"}},
       {day:'Mercoledì', lunch:{primo:"Pasta al pomodoro", secondo:"Crocchette di legumi", contorno:"Finocchi al forno", extra:"Dessert"},
-       dinner:{primo:"—", secondo:"Frittata alle verdure", contorno:"Carote julienne", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Frittata alle verdure", contorno:"Fagiolini* al forno", extra:"Frutta fresca di stagione"}},
       {day:'Giovedì', lunch:{primo:"Risotto alla zucca", secondo:"Burger di *pesce al forno", contorno:"Carote julienne", extra:"Frutta fresca di stagione"},
-       dinner:{primo:"—", secondo:"Formaggio fresco", contorno:"Spinaci* al vapore", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Formaggio fresco", contorno:"Biete erbette* al vapore", extra:"Frutta fresca di stagione"}},
       {day:'Venerdì', lunch:{primo:"Passato di *verdura con farro", secondo:"Hamburger di bovino", contorno:"Patate al forno", extra:"Frutta fresca di stagione"},
-       dinner:{primo:"—", secondo:"Pollo al forno", contorno:"Insalata mista", extra:"Frutta fresca di stagione"}}
+       dinner:{primo:"—", secondo:"Polpette di *piselli", contorno:"Cavolfiore al forno", extra:"Frutta fresca di stagione"}}
     ],
     shopping:{
-      'Ortofrutta':[['Spinaci','€'],['Insalata mista','€'],['Finocchi','€'],['Carote','€'],['Zucca','€€'],['Patate','€'],['Frutta fresca di stagione','€€']],
+      'Ortofrutta':[['Spinaci','€'],['Insalata mista','€'],['Finocchi','€'],['Carote','€'],['Zucca','€€'],['Patate','€'],['Zucchine','€'],['Broccoli','€'],['Fagiolini','€'],['Biete erbette','€'],['Cavolfiore','€'],['Frutta fresca di stagione','€€']],
       'Macelleria':[['Prosciutto cotto','€€'],['Hamburger di bovino','€€'],['Pollo','€€']],
       'Pescheria':[['Filetto di pesce','€€€'],['Burger di pesce','€€€']],
       'Latticini':[['Formaggio fresco','€€'],['Uova (frittata)','€'],['Parmigiano','€€']],
-      'Dispensa':[['Pasta','€'],['Riso','€'],['Farro','€€'],['Pizza Margherita','€'],['Passata di pomodoro','€'],['Crocchette di legumi','€€'],['Olio EVO','€€'],['Dessert','€€']],
+      'Dispensa':[['Pasta','€'],['Riso','€'],['Farro','€€'],['Pizza Margherita','€'],['Passata di pomodoro','€'],['Crocchette di legumi','€€'],['Piselli','€'],['Olio EVO','€€'],['Dessert','€€']],
       'Surgelati':[],
       'Altro':[]
     }
@@ -535,18 +543,18 @@ const MEAL_WEEKS = [
   {
     days:[
       {day:'Lunedì', lunch:{primo:"Pasta al pomodoro", secondo:"Pollo al forno", contorno:"Insalata mista", extra:"Frutta fresca di stagione"},
-       dinner:{primo:"—", secondo:"Formaggio fresco", contorno:"Finocchi al forno", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Formaggio fresco", contorno:"Spinaci* al vapore", extra:"Frutta fresca di stagione"}},
       {day:'Martedì', lunch:{primo:"Crema di verdure e legumi", secondo:"Polpette di bovino al forno", contorno:"Patate al forno", extra:"Frutta fresca di stagione"},
-       dinner:{primo:"—", secondo:"Filetto di *pesce al forno", contorno:"Carote al forno", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Filetto di *pesce al forno", contorno:"Fagiolini* al forno", extra:"Frutta fresca di stagione"}},
       {day:'Mercoledì', lunch:{primo:"Riso alla crema di zafferano", secondo:"Frittata alle verdure", contorno:"Biete erbette* al vapore", extra:"Dessert"},
-       dinner:{primo:"—", secondo:"Pollo al forno", contorno:"Patate al forno", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Pollo al forno", contorno:"Zucchine trifolate", extra:"Frutta fresca di stagione"}},
       {day:'Giovedì', lunch:{primo:"Pasta all'olio extravergine", secondo:"Formaggio fresco", contorno:"Carote al forno", extra:"Frutta fresca di stagione"},
-       dinner:{primo:"—", secondo:"Polpette di bovino al forno", contorno:"Finocchi al forno", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Polpette di bovino al forno", contorno:"Cavolfiore al forno", extra:"Frutta fresca di stagione"}},
       {day:'Venerdì', lunch:{primo:"Pasta al pomodoro e broccoli", secondo:"Filetto di *pesce al forno", contorno:"Finocchi al forno", extra:"Frutta fresca di stagione"},
-       dinner:{primo:"—", secondo:"Frittata alle verdure", contorno:"Insalata mista", extra:"Frutta fresca di stagione"}}
+       dinner:{primo:"—", secondo:"Frittata alle verdure", contorno:"Zucca al forno", extra:"Frutta fresca di stagione"}}
     ],
     shopping:{
-      'Ortofrutta':[['Insalata mista','€'],['Finocchi','€'],['Patate','€'],['Carote','€'],['Biete erbette','€'],['Broccoli','€'],['Frutta fresca di stagione','€€']],
+      'Ortofrutta':[['Insalata mista','€'],['Finocchi','€'],['Patate','€'],['Carote','€'],['Biete erbette','€'],['Broccoli','€'],['Spinaci','€'],['Fagiolini','€'],['Zucchine','€'],['Cavolfiore','€'],['Zucca','€€'],['Frutta fresca di stagione','€€']],
       'Macelleria':[['Pollo','€€'],['Polpette di bovino','€€']],
       'Pescheria':[['Filetto di pesce','€€€']],
       'Latticini':[['Formaggio fresco','€€'],['Uova (frittata)','€']],
@@ -558,18 +566,18 @@ const MEAL_WEEKS = [
   {
     days:[
       {day:'Lunedì', lunch:{primo:"Pasta alla crema di pesto", secondo:"Formaggio fresco", contorno:"Fagiolini* al forno", extra:"Frutta fresca di stagione"},
-       dinner:{primo:"—", secondo:"Filetto di *pesce al forno", contorno:"Patate al forno", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Filetto di *pesce al forno", contorno:"Broccoli al vapore", extra:"Frutta fresca di stagione"}},
       {day:'Martedì', lunch:{primo:"Risotto ai formaggi", secondo:"Cotoletta di maiale impanata al forno", contorno:"Carote al forno", extra:"Frutta fresca di stagione"},
        dinner:{primo:"—", secondo:"Frittata alle verdure", contorno:"Spinaci* al vapore", extra:"Frutta fresca di stagione"}},
       {day:'Mercoledì', lunch:{primo:"Pasta al pomodoro e ricotta", secondo:"Filetto di pesce* impanato al forno", contorno:"Insalata verde", extra:"Dessert"},
-       dinner:{primo:"—", secondo:"Pollo al forno", contorno:"Finocchi al forno", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Pollo al forno", contorno:"Zucchine trifolate", extra:"Frutta fresca di stagione"}},
       {day:'Giovedì', lunch:{primo:"Pasta al ragù di verdure", secondo:"Polpette di *piselli", contorno:"Finocchi al forno", extra:"Frutta fresca di stagione"},
-       dinner:{primo:"—", secondo:"Formaggio fresco", contorno:"Patate al forno", extra:"Frutta fresca di stagione"}},
+       dinner:{primo:"—", secondo:"Formaggio fresco", contorno:"Zucca al forno", extra:"Frutta fresca di stagione"}},
       {day:'Venerdì', lunch:{primo:"Passato di *verdura con orzo", secondo:"Frittata alle verdure", contorno:"Patate al forno", extra:"Frutta fresca di stagione"},
-       dinner:{primo:"—", secondo:"Filetto di *pesce al forno", contorno:"Insalata mista", extra:"Frutta fresca di stagione"}}
+       dinner:{primo:"—", secondo:"Filetto di *pesce al forno", contorno:"Cavolfiore al forno", extra:"Frutta fresca di stagione"}}
     ],
     shopping:{
-      'Ortofrutta':[['Fagiolini','€'],['Carote','€'],['Insalata verde','€'],['Finocchi','€'],['Spinaci','€'],['Patate','€'],['Insalata mista','€'],['Frutta fresca di stagione','€€']],
+      'Ortofrutta':[['Fagiolini','€'],['Carote','€'],['Insalata verde','€'],['Finocchi','€'],['Spinaci','€'],['Patate','€'],['Broccoli','€'],['Zucchine','€'],['Zucca','€€'],['Cavolfiore','€'],['Frutta fresca di stagione','€€']],
       'Macelleria':[['Cotoletta di maiale','€€'],['Pollo','€€']],
       'Pescheria':[['Filetto di pesce','€€€']],
       'Latticini':[['Formaggio fresco','€€'],['Uova (frittata)','€'],['Formaggio misto (risotto)','€€'],['Ricotta','€']],
